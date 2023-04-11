@@ -8,6 +8,7 @@ namespace SimpleUserContext.Services
         Task<IList<UserDto>> FindAllAsync();
         Task<User> FindByIdAsync(int id);
         Task<UserDto> FindUserDtoByIdAsync(int id);
+        Task<IList<UserDto>> FindByNameAsync(string name);
         Task<int> InsertAsync(UserDto userVM);
         Task<int> UpdateAsync(UserDto userVM);
         Task DeleteAsync(int id);

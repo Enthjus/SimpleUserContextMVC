@@ -1,45 +1,57 @@
-﻿@model SimpleUserContextMVC.DTOs.UserDto
-<dl class="row">
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Username)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Username)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Email)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Email)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Password)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Password)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.UserDetailDto.FirstName)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.UserDetailDto.FirstName)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.UserDetailDto.LastName)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.UserDetailDto.LastName)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.UserDetailDto.PhoneNumber)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.UserDetailDto.PhoneNumber)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.UserDetailDto.Address)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.UserDetailDto.Address)
-    </dd>
-</dl>
+﻿@model IEnumerable<SimpleUserContextMVC.DTOs.UserDto>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserDetailDto.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserDetailDto.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserDetailDto.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserDetailDto.Address)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserDetailDto.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserDetailDto.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserDetailDto.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserDetailDto.Address)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

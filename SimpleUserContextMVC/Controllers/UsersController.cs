@@ -2,34 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SimpleUserContext.Services;
 using SimpleUserContextMVC.DTOs;
+using SimpleUserContextMVC.Validators;
 
 namespace SimpleUserContextMVC.Controllers
 {
     public class UsersController : Controller
     {
         private readonly IUserService _userService;
+        private IValidator<UserDto> _validator;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, IValidator<UserDto> validator)
         {
             _userService = userService;
+            _validator = validator;
         }
 
         // GET: Users
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchString)
         {
-            IList<UserDto> userVMs = await _userService.FindAllAsync();
-
-            if(userVMs == null)
+            if (searchString != null)
             {
-                return Problem("Entity set 'ApplicationContext.Users'  is null.");
+                RedirectToAction(nameof(Index), new { searchString = searchString });
             }
 
-            return View(userVMs);
+            return View();
         }
 
         // GET: Users/Details/5
@@ -64,12 +67,15 @@ namespace SimpleUserContextMVC.Controllers
         public async Task<IActionResult> Create([Bind("Username,Email,Password," +
             "UserDetailDto")] UserDto userDto)
         {
-            if (ModelState.IsValid)
+            ValidationResult result = await _validator.ValidateAsync(userDto);
+            if (!result.IsValid)
             {
-                int id = await _userService.InsertAsync(userDto);
-                return RedirectToAction(nameof(Details), new { id = id });
+                result.AddToModelState(this.ModelState);
+                return View(userDto);
             }
-            return View(userDto);
+            int id = await _userService.InsertAsync(userDto);
+            TempData["notice"] = "User successfully created";
+            return RedirectToAction(nameof(Details), new { id = id });
         }
 
         // GET: Users/Edit/5
@@ -101,13 +107,15 @@ namespace SimpleUserContextMVC.Controllers
             {
                 return NotFound();
             }
+            ValidationResult result = await _validator.ValidateAsync(userDto);
 
-            if (ModelState.IsValid)
+            if (!result.IsValid)
             {
-                int userId = await _userService.UpdateAsync(userDto);
-                return RedirectToAction(nameof(Details), new {id = userId});
+                result.AddToModelState(this.ModelState);
+                return View(userDto);
             }
-            return View(userDto);
+            int userId = await _userService.UpdateAsync(userDto);
+            return RedirectToAction(nameof(Details), new { id = userId });
         }
 
         // GET: Users/Delete/5
