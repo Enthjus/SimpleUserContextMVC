@@ -39,7 +39,7 @@ namespace SimpleUserContext.Services
 
         public async Task<IList<UserDto>> FindByNameAsync(string name)
         {
-            var users = await _context.Users.Include(x => x.UserDetail).Where(u => u.UserDetail.LastName == name).ToListAsync();
+            var users = await _context.Users.Include(x => x.UserDetail).Where(u => u.UserDetail.LastName.ToUpper() == name.ToUpper()).ToListAsync();
             IList<UserDto> userDtos = _mapper.Map<List<UserDto>>(users);
             return userDtos;
         }
