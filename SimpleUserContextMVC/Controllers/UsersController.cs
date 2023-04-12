@@ -25,14 +25,21 @@ namespace SimpleUserContextMVC.Controllers
         }
 
         // GET: Users
-        public async Task<IActionResult> Index(string? searchString)
+        public IActionResult Index(string searchString)
         {
-            if (searchString != null)
+            //if (searchString != null)
+            //{
+            //    return View(searchString);
+            //    RedirectToAction("Index", new { searchString = searchString });
+            //}
+            if(searchString != null)
             {
-                RedirectToAction(nameof(Index), new { searchString = searchString });
+                return View("Index", new string($"{searchString}"));
             }
-
-            return View();
+            else
+            {
+                return View();
+            }
         }
 
         // GET: Users/Details/5

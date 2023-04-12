@@ -8,14 +8,12 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form method="get">
-    <div class="form-actions no-color">
-        <p>
-            Find by name:
-            <input type="text" name="SearchString" value="@Model" />
-            <input type="submit" value="Search" class="btn btn-primary" />
-        </p>
-    </div>
+<form asp-controller="Users" asp-action="Index" method="get">
+    <p>
+        Name: <input type="text" name="SearchString" />
+        <input type="submit" value="Filter" />
+    </p>
 </form>
-
-@await Component.InvokeAsync("User", new { searchString = Model });
+<div>
+    @await Component.InvokeAsync("User", new { searchString = Model })
+</div>
