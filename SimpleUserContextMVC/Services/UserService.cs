@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SimpleUserContext.Data;
-using SimpleUserContext.Models;
-using SimpleUserContextMVC.DTOs;
+using SimpleUser.Domain.Entities;
+using SimpleUser.MVC.Models;
+using SimpleUser.MVC.DTOs;
+using SimpleUser.Persistence.Data;
 
-namespace SimpleUserContext.Services
+namespace SimpleUser.MVC.Services
 {
     public class UserService : IUserService
     {
@@ -37,9 +38,14 @@ namespace SimpleUserContext.Services
             return user;
         }
 
-        public async Task<IList<UserDto>> FindByNameAsync(string name)
+        public async Task<IList<UserDto>> FindAsync(string keyword)
         {
-            var users = await _context.Users.Include(x => x.UserDetail).Where(u => u.UserDetail.LastName.ToUpper() == name.ToUpper()).ToListAsync();
+            var users = await _context.Users.Include(x => x.UserDetail)
+                .Where(u => u.UserDetail.LastName.ToUpper().Contains(keyword.ToUpper()) ||
+                u.UserDetail.FirstName.ToUpper().Contains(keyword.ToUpper()) ||
+                u.UserDetail.PhoneNumber.Contains(keyword) ||
+                u.Email.ToUpper().Contains(keyword.ToUpper()))
+                .ToListAsync();
             IList<UserDto> userDtos = _mapper.Map<List<UserDto>>(users);
             return userDtos;
         }

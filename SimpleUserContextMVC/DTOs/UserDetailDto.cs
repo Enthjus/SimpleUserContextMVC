@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SimpleUserContextMVC.DTOs
+﻿namespace SimpleUser.MVC.DTOs
 {
     public class UserDetailDto
     {

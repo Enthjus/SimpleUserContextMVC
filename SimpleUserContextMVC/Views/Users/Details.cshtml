@@ -1,4 +1,4 @@
-﻿@model SimpleUserContextMVC.DTOs.UserDto
+﻿@model SimpleUser.MVC.DTOs.UserDto
 
 @{
     ViewData["Title"] = "Details";
@@ -9,7 +9,9 @@
 <div>
     <h4>User</h4>
     <hr />
-    @await Component.InvokeAsync("User", Model)
+    @{
+        await Html.RenderPartialAsync("_UserDetailPartial", Model);
+    }
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |

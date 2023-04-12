@@ -1,4 +1,4 @@
-﻿@model string
+﻿@model SimpleUser.MVC.Models.IndexVM
 @{
     ViewData["Title"] = "Index";
 }
@@ -10,10 +10,10 @@
 </p>
 <form asp-controller="Users" asp-action="Index" method="get">
     <p>
-        Name: <input type="text" name="SearchString" />
+        Name: <input type="text" name="SearchString" value="@Model.SearchString" />
         <input type="submit" value="Filter" />
     </p>
 </form>
 <div>
-    @await Component.InvokeAsync("User", new { searchString = Model })
+    @await Component.InvokeAsync("User", new { searchString = Model.SearchString, pageIndex = Model.PageIndex })
 </div>

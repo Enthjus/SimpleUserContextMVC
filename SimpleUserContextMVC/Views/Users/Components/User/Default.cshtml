@@ -1,31 +1,31 @@
-﻿@model IEnumerable<SimpleUserContextMVC.DTOs.UserDto>
+﻿@model SimpleUser.MVC.Models.UserVM
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Username)
+                @Html.DisplayNameFor(model => model.Users[0].Username)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.Users[0].Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserDetailDto.FirstName)
+                @Html.DisplayNameFor(model => model.Users[0].UserDetailDto.FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserDetailDto.LastName)
+                @Html.DisplayNameFor(model => model.Users[0].UserDetailDto.LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserDetailDto.PhoneNumber)
+                @Html.DisplayNameFor(model => model.Users[0].UserDetailDto.PhoneNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserDetailDto.Address)
+                @Html.DisplayNameFor(model => model.Users[0].UserDetailDto.Address)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Users)
         {
             <tr>
                 <td>
@@ -55,3 +55,21 @@
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-pageIndex="@(Model.PageIndex - 1)"
+   asp-route-searchString="@Model.SearchString"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-pageIndex="@(Model.PageIndex + 1)"
+   asp-route-searchString="@Model.SearchString"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

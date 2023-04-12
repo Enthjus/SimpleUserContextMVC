@@ -1,30 +1,51 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SimpleUserContext.Models;
-using SimpleUserContext.Services;
-using SimpleUserContextMVC.DTOs;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PagedList;
+using SimpleUser.Domain.Entities;
+using SimpleUser.MVC.DTOs;
+using SimpleUser.MVC.Models;
+using SimpleUser.MVC.Services;
+using SimpleUser.Persistence.Data;
 
-namespace SimpleUserContextMVC.ViewComponents
+namespace SimpleUser.MVC.ViewComponents
 {
     public class UserViewComponent : ViewComponent
     {
         private readonly IUserService _userService;
-        public UserViewComponent(IUserService userService)
+        private readonly ApplicationContext _context;
+        private readonly IMapper _mapper;
+        public UserViewComponent(IUserService userService, ApplicationContext context, IMapper mapper)
         {
             _userService = userService;
+            _context = context;
+            _mapper = mapper;
         }
+        private int pageSize = 3;
 
-        public async Task<IViewComponentResult> InvokeAsync(string searchString)
+        public async Task<IViewComponentResult> InvokeAsync(string searchString, int pageIndex)
         {
-            if (searchString == null || searchString == "")
+            IQueryable<User> users = from u in _context.Users
+                                        select u;
+            IList<UserDto> userDtos;
+            PaginatedList<User> pageList;
+            if (!string.IsNullOrEmpty(searchString)) // TODO: to be replaced with built-in function
             {
-                var userDto = await _userService.FindAllAsync();
-                return View(userDto);
+                users = users
+                    .Where(u => u.UserDetail.LastName.ToUpper().Contains(searchString.ToUpper()) ||
+                    u.UserDetail.FirstName.ToUpper().Contains(searchString.ToUpper()) ||
+                    u.UserDetail.PhoneNumber.Contains(searchString) ||
+                    u.Email.ToUpper().Contains(searchString.ToUpper()));
             }
-            else
-            {
-                var userDto = await _userService.FindByNameAsync(searchString);
-                return View(userDto);
-            }
+            pageList = await PaginatedList<User>.CreateAsync(users, pageIndex, pageSize);
+            userDtos = _mapper.Map<List<UserDto>>(pageList.ToList());
+            var userVM = new UserVM();
+            userVM.Users = userDtos;
+            userVM.SearchString = searchString;
+            userVM.PageIndex = pageIndex;
+            userVM.HasPreviousPage = pageList.HasPreviousPage;
+            userVM.HasNextPage = pageList.HasNextPage;
+            return View(userVM);
         }
     }
 }

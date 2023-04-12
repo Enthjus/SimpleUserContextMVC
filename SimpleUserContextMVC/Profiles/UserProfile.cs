@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using SimpleUserContext.Models;
-using SimpleUserContextMVC.DTOs;
+using SimpleUser.Domain.Entities;
+using SimpleUser.MVC.DTOs;
 
-namespace SimpleUserContextMVC.Profiles
+namespace SimpleUser.MVC.Profiles
 {
     public class UserProfile : Profile
     {

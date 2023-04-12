@@ -7,11 +7,12 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SimpleUserContext.Services;
-using SimpleUserContextMVC.DTOs;
-using SimpleUserContextMVC.Validators;
+using SimpleUser.MVC.DTOs;
+using SimpleUser.MVC.Models;
+using SimpleUser.MVC.Services;
+using SimpleUser.MVC.Validators;
 
-namespace SimpleUserContextMVC.Controllers
+namespace SimpleUser.MVC.Controllers
 {
     public class UsersController : Controller
     {
@@ -25,21 +26,20 @@ namespace SimpleUserContextMVC.Controllers
         }
 
         // GET: Users
-        public IActionResult Index(string searchString)
+        public IActionResult Index(string searchString, int? pageIndex)
         {
-            //if (searchString != null)
-            //{
-            //    return View(searchString);
-            //    RedirectToAction("Index", new { searchString = searchString });
-            //}
-            if(searchString != null)
+            if (string.IsNullOrEmpty(searchString))
             {
-                return View("Index", new string($"{searchString}"));
+                searchString = "";
             }
-            else
+            if(pageIndex == null)
             {
-                return View();
+                pageIndex = 1;
             }
+            return View("Index", new IndexVM {
+                SearchString = searchString,
+                PageIndex = pageIndex.Value
+            });
         }
 
         // GET: Users/Details/5

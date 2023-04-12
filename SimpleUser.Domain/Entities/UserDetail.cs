@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace SimpleUserContext.Models
+﻿namespace SimpleUser.Domain.Entities
 {
     public class UserDetail
     {

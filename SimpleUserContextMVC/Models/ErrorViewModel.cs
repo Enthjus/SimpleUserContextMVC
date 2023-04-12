@@ -1,4 +1,4 @@
-namespace SimpleUserContextMVC.Models
+namespace SimpleUser.MVC.Models
 {
     public class ErrorViewModel
     {

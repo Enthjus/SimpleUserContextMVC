@@ -1,19 +1,18 @@
-﻿using SimpleUserContext.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SimpleUser.Domain.Entities;
 
-namespace SimpleUserContext.Data
+namespace SimpleUser.Persistence.Data
 {
     public static class DbInitializer
     {
         public static void Initialize(ApplicationContext context)
         {
-            // Look for any students.
-            if (context.Users.Any())
-            {
-                return;   // DB has been seeded
-            }
+            context.Database.Migrate();
 
-            var users = new User[]
+            if (!context.Users.Any())
             {
+                var users = new User[]
+                {
                 new User{Username="User1",Email="user1@gmail.com",Password=BCrypt.Net.BCrypt.HashPassword("123123"),
                 UserDetail = new UserDetail{FirstName="Carson",LastName="Alexander",PhoneNumber="0123123121",Address="Address1"}},
                 new User{Username="User2",Email="user2@gmail.com",Password=BCrypt.Net.BCrypt.HashPassword("123123"),
@@ -31,10 +30,11 @@ namespace SimpleUserContext.Data
                 new User{Username="User8",Email="user8@gmail.com",Password=BCrypt.Net.BCrypt.HashPassword("123123"),
                 UserDetail = new UserDetail{FirstName="Nino",LastName="Olivetto",PhoneNumber="0123123128",Address="Address8"}}
 
-            };
+                };
 
-            context.Users.AddRange(users);
-            context.SaveChanges();
+                context.Users.AddRange(users);
+                context.SaveChanges();
+            }
 
             //var userDetails = new UserDetail[]
             //{

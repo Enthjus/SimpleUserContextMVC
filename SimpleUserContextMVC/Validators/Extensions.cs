@@ -1,7 +1,7 @@
 ﻿using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace SimpleUserContextMVC.Validators
+namespace SimpleUser.MVC.Validators
 {
     public static class Extensions
     {

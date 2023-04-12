@@ -1,9 +1,9 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using SimpleUserContext.Data;
-using SimpleUserContext.Services;
-using SimpleUserContextMVC.DTOs;
-using SimpleUserContextMVC.Validators;
+using SimpleUser.MVC.DTOs;
+using SimpleUser.MVC.Services;
+using SimpleUser.MVC.Validators;
+using SimpleUser.Persistence.Data;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationContext>(options =>
-  options.UseSqlServer(builder.Configuration.GetConnectionString("UserContext")));
+  options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

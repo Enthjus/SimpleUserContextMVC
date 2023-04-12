@@ -2,28 +2,26 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SimpleUserContext.Data;
+using SimpleUser.Persistence.Data;
 
 #nullable disable
 
-namespace SimpleUserContextMVC.Migrations
+namespace SimpleUser.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230406044053_UpdatePasswordValidation")]
-    partial class UpdatePasswordValidation
+    partial class ApplicationContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.15")
+                .HasAnnotation("ProductVersion", "6.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("SimpleUserContext.Models.User", b =>
+            modelBuilder.Entity("SimpleUser.Domain.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,8 +31,7 @@ namespace SimpleUserContextMVC.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -42,15 +39,14 @@ namespace SimpleUserContextMVC.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("User", (string)null);
                 });
 
-            modelBuilder.Entity("SimpleUserContext.Models.UserDetail", b =>
+            modelBuilder.Entity("SimpleUser.Domain.Entities.UserDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,23 +56,19 @@ namespace SimpleUserContextMVC.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -89,18 +81,18 @@ namespace SimpleUserContextMVC.Migrations
                     b.ToTable("UserDetail", (string)null);
                 });
 
-            modelBuilder.Entity("SimpleUserContext.Models.UserDetail", b =>
+            modelBuilder.Entity("SimpleUser.Domain.Entities.UserDetail", b =>
                 {
-                    b.HasOne("SimpleUserContext.Models.User", "User")
+                    b.HasOne("SimpleUser.Domain.Entities.User", "User")
                         .WithOne("UserDetail")
-                        .HasForeignKey("SimpleUserContext.Models.UserDetail", "UserId")
+                        .HasForeignKey("SimpleUser.Domain.Entities.UserDetail", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SimpleUserContext.Models.User", b =>
+            modelBuilder.Entity("SimpleUser.Domain.Entities.User", b =>
                 {
                     b.Navigation("UserDetail")
                         .IsRequired();

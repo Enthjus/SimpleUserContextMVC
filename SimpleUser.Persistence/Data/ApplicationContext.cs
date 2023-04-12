@@ -4,9 +4,9 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SimpleUserContext.Models;
+using SimpleUser.Domain.Entities;
 
-namespace SimpleUserContext.Data
+namespace SimpleUser.Persistence.Data
 {
     public class ApplicationContext : DbContext
     {
