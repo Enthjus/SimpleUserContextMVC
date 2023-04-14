@@ -1,7 +1,7 @@
 ﻿using SimpleUser.Domain.Entities;
-using SimpleUser.MVC.DTOs;
+using SimpleUser.API.DTOs;
 
-namespace SimpleUser.MVC.Services
+namespace SimpleUser.API.Services
 {
     public interface IUserService
     {
@@ -14,5 +14,6 @@ namespace SimpleUser.MVC.Services
         Task<int> UpdateAsync(UserUpdateDto userUpdateDto);
         Task DeleteAsync(int id);
         bool IsUserAlreadyExistsByEmail(string email);
+        Task<PaginatedList<UserDto>> FindAllByPageAsync(int pageSize,  int pageIndex, string filter);
     }
 }

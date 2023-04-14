@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using SimpleUser.MVC.DTOs;
+using SimpleUser.API.DTOs;
 
-namespace SimpleUser.MVC.Validators
+namespace SimpleUser.API.Validators
 {
     public class UserDetailValidator : AbstractValidator<UserDetailDto>
     {

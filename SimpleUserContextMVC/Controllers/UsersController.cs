@@ -17,12 +17,15 @@ namespace SimpleUser.MVC.Controllers
     public class UsersController : Controller
     {
         private readonly IUserService _userService;
-        private IValidator<UserDto> _validator;
+        private IValidator<UserCreateDto> _validatorCreate;
+        private IValidator<UserUpdateDto> _validatorUpdate;
 
-        public UsersController(IUserService userService, IValidator<UserDto> validator)
+        public UsersController(IUserService userService, IValidator<UserCreateDto> validatorCreate,
+            IValidator<UserUpdateDto> validatorUpdate)
         {
             _userService = userService;
-            _validator = validator;
+            _validatorCreate = validatorCreate;
+            _validatorUpdate = validatorUpdate;
         }
 
         // GET: Users
@@ -71,17 +74,16 @@ namespace SimpleUser.MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Username,Email,Password," +
-            "UserDetailDto")] UserDto userDto)
+        public async Task<IActionResult> Create([Bind("Username,Email,Password,ConfirmPassword," +
+            "UserDetailDto")] UserCreateDto userCreateDto)
         {
-            ValidationResult result = await _validator.ValidateAsync(userDto);
+            ValidationResult result = await _validatorCreate.ValidateAsync(userCreateDto);
             if (!result.IsValid)
             {
                 result.AddToModelState(this.ModelState);
-                return View(userDto);
+                return View(userCreateDto);
             }
-            int id = await _userService.InsertAsync(userDto);
-            TempData["notice"] = "User successfully created";
+            int id = await _userService.InsertAsync(userCreateDto);
             return RedirectToAction(nameof(Details), new { id = id });
         }
 
@@ -93,7 +95,7 @@ namespace SimpleUser.MVC.Controllers
                 return NotFound();
             }
 
-            var userVM = await _userService.FindUserDtoByIdAsync(id.Value);
+            var userVM = await _userService.FindUserUpdateByIdAsync(id.Value);
 
             if (userVM == null)
             {
@@ -107,21 +109,21 @@ namespace SimpleUser.MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Email,Password," +
-            "UserDetailDto")] UserDto userDto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Email," +
+            "UserDetailDto")] UserUpdateDto userUpdateDto)
         {
-            if (id != userDto.Id)
+            if (id != userUpdateDto.Id)
             {
                 return NotFound();
             }
-            ValidationResult result = await _validator.ValidateAsync(userDto);
+            ValidationResult result = await _validatorUpdate.ValidateAsync(userUpdateDto);
 
             if (!result.IsValid)
             {
                 result.AddToModelState(this.ModelState);
-                return View(userDto);
+                return View(userUpdateDto);
             }
-            int userId = await _userService.UpdateAsync(userDto);
+            int userId = await _userService.UpdateAsync(userUpdateDto);
             return RedirectToAction(nameof(Details), new { id = userId });
         }
 
@@ -154,6 +156,16 @@ namespace SimpleUser.MVC.Controllers
                 await _userService.DeleteAsync(id);
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult IsUserAlreadyExists(string Email)
+        {
+            if (_userService.IsUserAlreadyExistsByEmail(Email))
+            {
+                return Json($"Email {Email} is already in use.");
+            }
+            return Json(true);
         }
     }
 }

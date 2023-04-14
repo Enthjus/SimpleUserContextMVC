@@ -8,7 +8,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form asp-controller="Users" asp-action="Index" method="get">
+<form asp-controller="Users" asp-action="Index" method="post">
     <p>
         Name: <input type="text" name="SearchString" value="@Model.SearchString" />
         <input type="submit" value="Filter" />

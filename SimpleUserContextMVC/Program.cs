@@ -16,6 +16,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IValidator<UserDto>, UserValidator>();
+builder.Services.AddScoped<IValidator<UserCreateDto>, UserCreateValidator>();
+builder.Services.AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>();
 
 var app = builder.Build();
 

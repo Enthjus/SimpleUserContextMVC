@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PagedList;
 using SimpleUser.Domain.Entities;
 using SimpleUser.MVC.DTOs;
 using SimpleUser.MVC.Models;
@@ -25,8 +24,9 @@ namespace SimpleUser.MVC.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(string searchString, int pageIndex)
         {
-            IQueryable<User> users = from u in _context.Users
-                                        select u;
+            IQueryable<User> users = from u in _context.Users.Include(x => x.UserDetail)
+                                     select u;
+            //IQueryable<UserDto> userDTOs = _mapper.Map<IQueryable<UserDto>>(users);
             IList<UserDto> userDtos;
             PaginatedList<User> pageList;
             if (!string.IsNullOrEmpty(searchString)) // TODO: to be replaced with built-in function

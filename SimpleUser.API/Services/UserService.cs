@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SimpleUser.Domain.Entities;
-using SimpleUser.MVC.Models;
-using SimpleUser.MVC.DTOs;
+using SimpleUser.API.DTOs;
 using SimpleUser.Persistence.Data;
+using Microsoft.VisualBasic;
+using AutoMapper.QueryableExtensions;
+using System.Runtime.CompilerServices;
 
-namespace SimpleUser.MVC.Services
+namespace SimpleUser.API.Services
 {
     public class UserService : IUserService
     {
@@ -85,6 +87,38 @@ namespace SimpleUser.MVC.Services
         public bool IsUserAlreadyExistsByEmail(string email)
         {
             return _context.Users.Any(x => x.Email == email);
+        }
+
+        public async Task<PaginatedList<UserDto>> FindAllByPageAsync(int pageSize, int pageIndex, string filter)
+        {
+            IQueryable<User> users = from u in _context.Users.Include(x => x.UserDetail)
+                                     select u;
+            IQueryable<UserDto> userDtos = _mapper.ProjectTo<UserDto>(users);
+            PaginatedList<UserDto> pageList;
+            if (!string.IsNullOrEmpty(filter))
+            {
+                users = users
+                    .Where(u => u.UserDetail.LastName.ToUpper().Contains(filter.ToUpper()) ||
+                    u.UserDetail.FirstName.ToUpper().Contains(filter.ToUpper()) ||
+                    u.UserDetail.PhoneNumber.Contains(filter) ||
+                    u.Email.ToUpper().Contains(filter.ToUpper()));
+            }
+            if(IsZeroOrNull(pageSize))
+            {
+                pageSize = 4;
+            }
+            if(IsZeroOrNull(pageIndex))
+            {
+                pageIndex = 1;
+            }
+            pageList = await PaginatedList<UserDto>.CreateAsync(userDtos, pageIndex, pageSize);
+            return pageList;
+        }
+
+        public bool IsZeroOrNull(int num)
+        {
+            if(num == 0 || num == null) return true;
+            return false;
         }
     }
 }

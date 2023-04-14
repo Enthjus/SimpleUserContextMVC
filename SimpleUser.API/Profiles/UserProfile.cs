@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using SimpleUser.Domain.Entities;
-using SimpleUser.MVC.DTOs;
+using SimpleUser.API.DTOs;
 
-namespace SimpleUser.MVC.Profiles
+namespace SimpleUser.API.Profiles
 {
     public class UserProfile : Profile
     {
@@ -32,8 +32,6 @@ namespace SimpleUser.MVC.Profiles
                .ForMember(
                    dest => dest.UserDetail,
                    opt => opt.MapFrom(src => src.UserDetailDto)
-               ).ForMember(
-                   dest => dest.Password, opt => opt.Ignore()
                );
             CreateMap<User, UserUpdateDto>()
                 .ForMember(
