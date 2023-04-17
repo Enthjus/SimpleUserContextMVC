@@ -4,28 +4,28 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Users[0].Username)
+                @Html.DisplayNameFor(model => model.Users.Users[0].Username)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Users[0].Email)
+                @Html.DisplayNameFor(model => model.Users.Users[0].Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Users[0].UserDetailDto.FirstName)
+                @Html.DisplayNameFor(model => model.Users.Users[0].UserDetailDto.FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Users[0].UserDetailDto.LastName)
+                @Html.DisplayNameFor(model => model.Users.Users[0].UserDetailDto.LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Users[0].UserDetailDto.PhoneNumber)
+                @Html.DisplayNameFor(model => model.Users.Users[0].UserDetailDto.PhoneNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Users[0].UserDetailDto.Address)
+                @Html.DisplayNameFor(model => model.Users.Users[0].UserDetailDto.Address)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Users)
+        @foreach (var item in Model.Users.Users)
         {
             <tr>
                 <td>
@@ -57,19 +57,23 @@
 </table>
 
 @{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.Users.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Users.HasNextPage ? "disabled" : "";
 }
 
 <a asp-action="Index"
-   asp-route-pageIndex="@(Model.PageIndex - 1)"
-   asp-route-searchString="@Model.SearchString"
+   asp-route-PageIndex="@(Model.Index.PageIndex - 1)"
+   asp-route-Filter="@Model.Index.Filter"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
+@for (int i = 1; i <= Model.Users.TotalPages; i++)
+{
+    <a asp-action="Index" asp-route-PageIndex="@i" asp-route-Filter="@Model.Index.Filter"></a>
+}
 <a asp-action="Index"
-   asp-route-pageIndex="@(Model.PageIndex + 1)"
-   asp-route-searchString="@Model.SearchString"
+   asp-route-PageIndex="@(Model.Index.PageIndex + 1)"
+   asp-route-Filter="@Model.Index.Filter"
    class="btn btn-default @nextDisabled">
     Next
 </a>

@@ -16,10 +16,6 @@ namespace SimpleUser.MVC.Validators
                 .NotNull()
                 .Matches(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$")
                 .WithMessage("Checking for invalid email address format and recommending corrections for typos.");
-            RuleFor(x => x.Password)
-                .NotNull()
-                .MaximumLength(50)
-                .WithMessage("Password should no more than 50 character");
             RuleFor(x => x.UserDetailDto).SetValidator(new UserDetailValidator());
         }
     }

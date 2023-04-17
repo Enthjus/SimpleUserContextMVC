@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SimpleUser.MVC.DTOs;
 using SimpleUser.MVC.Models;
 using SimpleUser.MVC.Services;
@@ -29,20 +24,21 @@ namespace SimpleUser.MVC.Controllers
         }
 
         // GET: Users
-        public IActionResult Index(string searchString, int? pageIndex)
+        public IActionResult Index([FromQuery] IndexVM indexVM)
         {
-            if (string.IsNullOrEmpty(searchString))
+            if (string.IsNullOrEmpty(indexVM.Filter))
             {
-                searchString = "";
+                indexVM.Filter = "";
             }
-            if(pageIndex == null)
+            if (_userService.IsNullOrZero(indexVM.PageIndex))
             {
-                pageIndex = 1;
+                indexVM.PageIndex = 1;
             }
-            return View("Index", new IndexVM {
-                SearchString = searchString,
-                PageIndex = pageIndex.Value
-            });
+            if (_userService.IsNullOrZero(indexVM.PageSize))
+            {
+                indexVM.PageSize = 4;
+            }
+            return View("Index", indexVM);
         }
 
         // GET: Users/Details/5

@@ -71,6 +71,10 @@ namespace SimpleUser.API.Services
         public async Task<int> UpdateAsync(UserUpdateDto userUpdateDto)
         {
             var oldUser = await FindByIdAsync(userUpdateDto.Id);
+            if(userUpdateDto.NewPassword == null)
+            {
+                userUpdateDto.NewPassword = oldUser.Password;
+            }
             var entry = _context.Users.Update(oldUser);
             entry.CurrentValues.SetValues(userUpdateDto);
             await _context.SaveChangesAsync();
@@ -84,9 +88,24 @@ namespace SimpleUser.API.Services
             return userUpdate;
         }
 
-        public bool IsUserAlreadyExistsByEmail(string email)
+        public bool IsUserAlreadyExistsByEmail(string email, int id = 0)
         {
-            return _context.Users.Any(x => x.Email == email);
+            if(id != 0)
+            {
+                var oldUser = _context.Users.Find(id);
+                if(oldUser.Email != email)
+                {
+                    return _context.Users.Any(x => x.Email == email);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return _context.Users.Any(x => x.Email == email);
+            }
         }
 
         public async Task<PaginatedList<UserDto>> FindAllByPageAsync(int pageSize, int pageIndex, string filter)

@@ -10,8 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ApplicationContext>(options =>
-  options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
+builder.Services
+.AddHttpClient();
+//builder.Services.AddDbContext<ApplicationContext>(options =>
+//  options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -34,14 +36,14 @@ else
     app.UseMigrationsEndPoint();
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
 
-    var context = services.GetRequiredService<ApplicationContext>();
-    //context.Database.EnsureCreated();
-    DbInitializer.Initialize(context);
-}
+//    var context = services.GetRequiredService<ApplicationContext>();
+//    //context.Database.EnsureCreated();
+//    DbInitializer.Initialize(context);
+//}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

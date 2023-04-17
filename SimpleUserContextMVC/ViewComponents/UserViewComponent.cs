@@ -6,45 +6,57 @@ using SimpleUser.MVC.DTOs;
 using SimpleUser.MVC.Models;
 using SimpleUser.MVC.Services;
 using SimpleUser.Persistence.Data;
+using System.Net.Http.Headers;
 
 namespace SimpleUser.MVC.ViewComponents
 {
     public class UserViewComponent : ViewComponent
     {
-        private readonly IUserService _userService;
-        private readonly ApplicationContext _context;
-        private readonly IMapper _mapper;
-        public UserViewComponent(IUserService userService, ApplicationContext context, IMapper mapper)
+        public UserViewComponent()
         {
-            _userService = userService;
-            _context = context;
-            _mapper = mapper;
         }
         private int pageSize = 3;
 
-        public async Task<IViewComponentResult> InvokeAsync(string searchString, int pageIndex)
+        public async Task<IViewComponentResult> InvokeAsync(IndexVM indexVM)
         {
-            IQueryable<User> users = from u in _context.Users.Include(x => x.UserDetail)
-                                     select u;
-            //IQueryable<UserDto> userDTOs = _mapper.Map<IQueryable<UserDto>>(users);
-            IList<UserDto> userDtos;
-            PaginatedList<User> pageList;
-            if (!string.IsNullOrEmpty(searchString)) // TODO: to be replaced with built-in function
+            //IQueryable<User> users = from u in _context.Users.Include(x => x.UserDetail)
+            //                         select u;
+            ////IQueryable<UserDto> userDTOs = _mapper.Map<IQueryable<UserDto>>(users);
+            //IList<UserDto> userDtos;
+            PaginatedList<UserDto> pageList = null;
+            using (var client = new HttpClient())
             {
-                users = users
-                    .Where(u => u.UserDetail.LastName.ToUpper().Contains(searchString.ToUpper()) ||
-                    u.UserDetail.FirstName.ToUpper().Contains(searchString.ToUpper()) ||
-                    u.UserDetail.PhoneNumber.Contains(searchString) ||
-                    u.Email.ToUpper().Contains(searchString.ToUpper()));
+                client.BaseAddress = new Uri("http://localhost:7037/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                //GET Method
+                HttpResponseMessage response = await client.GetAsync(
+                    $"Users?PageSize={indexVM.PageSize}&PageIndex={indexVM.PageIndex}&Filter={indexVM.Filter}");
+                if (response.IsSuccessStatusCode)
+                {
+                    pageList = await response.Content.ReadFromJsonAsync<PaginatedList<UserDto>>();
+                }
             }
-            pageList = await PaginatedList<User>.CreateAsync(users, pageIndex, pageSize);
-            userDtos = _mapper.Map<List<UserDto>>(pageList.ToList());
-            var userVM = new UserVM();
-            userVM.Users = userDtos;
-            userVM.SearchString = searchString;
-            userVM.PageIndex = pageIndex;
-            userVM.HasPreviousPage = pageList.HasPreviousPage;
-            userVM.HasNextPage = pageList.HasNextPage;
+            UserVM userVM = new UserVM();
+            userVM.Users = pageList;
+            userVM.Index = indexVM;
+            //if (!string.IsNullOrEmpty(searchString)) // TODO: to be replaced with built-in function
+            //{
+            //    users = users
+            //        .Where(u => u.UserDetail.LastName.ToUpper().Contains(searchString.ToUpper()) ||
+            //        u.UserDetail.FirstName.ToUpper().Contains(searchString.ToUpper()) ||
+            //        u.UserDetail.PhoneNumber.Contains(searchString) ||
+            //        u.Email.ToUpper().Contains(searchString.ToUpper()));
+            //}
+
+            //pageList = await PaginatedList<UserDto>.CreateAsync(users, pageIndex, pageSize);
+            //userDtos = _mapper.Map<List<UserDto>>(pageList.ToList());
+            //var userVM = new UserVM();
+            //userVM.Users = userDtos;
+            //userVM.SearchString = searchString;
+            //userVM.PageIndex = pageIndex;
+            //userVM.HasPreviousPage = pageList.HasPreviousPage;
+            //userVM.HasNextPage = pageList.HasNextPage;
             return View(userVM);
         }
     }

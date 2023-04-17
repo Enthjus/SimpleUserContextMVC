@@ -14,5 +14,6 @@ namespace SimpleUser.MVC.Services
         Task<int> UpdateAsync(UserUpdateDto userUpdateDto);
         Task DeleteAsync(int id);
         bool IsUserAlreadyExistsByEmail(string email);
+        bool IsNullOrZero(int num);
     }
 }

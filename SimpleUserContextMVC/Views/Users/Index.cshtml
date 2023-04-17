@@ -10,10 +10,12 @@
 </p>
 <form asp-controller="Users" asp-action="Index" method="post">
     <p>
-        Name: <input type="text" name="SearchString" value="@Model.SearchString" />
+        Name: <input type="text" name="Filter" value="@Model.Filter" />
+        <br />
+        Page size: <input type="text" name="PageSize" value="@Model.PageSize" />
         <input type="submit" value="Filter" />
     </p>
 </form>
 <div>
-    @await Component.InvokeAsync("User", new { searchString = Model.SearchString, pageIndex = Model.PageIndex })
+    @await Component.InvokeAsync("User", new IndexVM { Filter = Model.Filter, PageIndex = Model.PageIndex, PageSize = Model.PageSize })
 </div>

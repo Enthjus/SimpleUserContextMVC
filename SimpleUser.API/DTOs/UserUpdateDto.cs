@@ -6,9 +6,8 @@ namespace SimpleUser.API.DTOs
     {
         public int Id { get; set; }
         public string Username { get; set; }
-        [Remote(action: "IsUserAlreadyExists", controller: "Users")]
         public string Email { get; set; }
-        public string Password { get; set; }
+        public string? NewPassword { get; set; }
         public UserDetailDto UserDetailDto { get; set; }
     }
 }

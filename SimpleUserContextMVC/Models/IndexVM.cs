@@ -2,7 +2,8 @@
 {
     public class IndexVM
     {
+        public int PageSize { get; set; }
         public int PageIndex { get; set; }
-        public string SearchString { get; set; }
+        public string Filter { get; set; }
     }
 }

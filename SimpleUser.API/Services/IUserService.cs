@@ -13,7 +13,7 @@ namespace SimpleUser.API.Services
         Task<int> InsertAsync(UserCreateDto userCreateDto);
         Task<int> UpdateAsync(UserUpdateDto userUpdateDto);
         Task DeleteAsync(int id);
-        bool IsUserAlreadyExistsByEmail(string email);
+        bool IsUserAlreadyExistsByEmail(string email, int id = 0);
         Task<PaginatedList<UserDto>> FindAllByPageAsync(int pageSize,  int pageIndex, string filter);
     }
 }

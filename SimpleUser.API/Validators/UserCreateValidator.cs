@@ -7,12 +7,9 @@ namespace SimpleUser.API.Validators
     public class UserCreateValidator : AbstractValidator<UserCreateDto>
     {
         private readonly IUserService _userService;
-        public UserCreateValidator(IUserService userService)
-        {
-            _userService = userService;
-        }
-        public UserCreateValidator() 
+        public UserCreateValidator(IUserService userService) 
         { 
+            _userService = userService;
              RuleFor(x => x.Username)
                 .NotNull()
                 .WithMessage("Username cannot be empty")
@@ -36,6 +33,13 @@ namespace SimpleUser.API.Validators
                 if (x.Password != x.ConfirmPassword)
                 {
                     context.AddFailure(nameof(x.ConfirmPassword), "Confirm password must match with password");
+                }
+            });
+            RuleFor(x => x).Custom((x, context) =>
+            {
+                if (_userService.IsUserAlreadyExistsByEmail(x.Email))
+                {
+                    context.AddFailure(nameof(x.Email), "Email already exist");
                 }
             });
             RuleFor(x => x.UserDetailDto).SetValidator(new UserDetailValidator());
