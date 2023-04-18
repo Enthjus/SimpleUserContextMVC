@@ -64,16 +64,18 @@
 <a asp-action="Index"
    asp-route-PageIndex="@(Model.Index.PageIndex - 1)"
    asp-route-Filter="@Model.Index.Filter"
+   asp-route-PageSize="@Model.Index.PageSize"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
 @for (int i = 1; i <= Model.Users.TotalPages; i++)
 {
-    <a asp-action="Index" asp-route-PageIndex="@i" asp-route-Filter="@Model.Index.Filter"></a>
+    <a asp-action="Index" asp-route-PageIndex="@i" asp-route-Filter="@Model.Index.Filter" asp-route-PageSize="@Model.Index.PageSize">@i</a>
 }
 <a asp-action="Index"
    asp-route-PageIndex="@(Model.Index.PageIndex + 1)"
    asp-route-Filter="@Model.Index.Filter"
+   asp-route-PageSize="@Model.Index.PageSize"
    class="btn btn-default @nextDisabled">
     Next
 </a>

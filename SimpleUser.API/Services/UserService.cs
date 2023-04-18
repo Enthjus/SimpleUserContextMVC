@@ -71,12 +71,21 @@ namespace SimpleUser.API.Services
         public async Task<int> UpdateAsync(UserUpdateDto userUpdateDto)
         {
             var oldUser = await FindByIdAsync(userUpdateDto.Id);
-            if(userUpdateDto.NewPassword == null)
+            if(!string.IsNullOrEmpty(userUpdateDto.NewPassword) & !string.IsNullOrEmpty(userUpdateDto.OldPassword))
             {
-                userUpdateDto.NewPassword = oldUser.Password;
+                if (!BCrypt.Net.BCrypt.Verify(userUpdateDto.OldPassword, oldUser.Password))
+                {
+                    throw new Exception("Old password is Invalid");
+                }
+
+            }
+            var newUser = _mapper.Map<User>(userUpdateDto);
+            if (string.IsNullOrEmpty(newUser.Password))
+            {
+                newUser.Password = oldUser.Password;
             }
             var entry = _context.Users.Update(oldUser);
-            entry.CurrentValues.SetValues(userUpdateDto);
+            entry.CurrentValues.SetValues(newUser);
             await _context.SaveChangesAsync();
             return entry.Entity.Id;
         }
@@ -116,10 +125,10 @@ namespace SimpleUser.API.Services
             PaginatedList<UserDto> pageList;
             if (!string.IsNullOrEmpty(filter))
             {
-                users = users
-                    .Where(u => u.UserDetail.LastName.ToUpper().Contains(filter.ToUpper()) ||
-                    u.UserDetail.FirstName.ToUpper().Contains(filter.ToUpper()) ||
-                    u.UserDetail.PhoneNumber.Contains(filter) ||
+                userDtos = userDtos
+                    .Where(u => u.UserDetailDto.LastName.ToUpper().Contains(filter.ToUpper()) ||
+                    u.UserDetailDto.FirstName.ToUpper().Contains(filter.ToUpper()) ||
+                    u.UserDetailDto.PhoneNumber.Contains(filter) ||
                     u.Email.ToUpper().Contains(filter.ToUpper()));
             }
             if(IsZeroOrNull(pageSize))

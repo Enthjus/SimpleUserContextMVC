@@ -15,7 +15,7 @@ builder.Services
 //builder.Services.AddDbContext<ApplicationContext>(options =>
 //  options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IValidator<UserDto>, UserValidator>();
 builder.Services.AddScoped<IValidator<UserCreateDto>, UserCreateValidator>();
@@ -49,7 +49,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(

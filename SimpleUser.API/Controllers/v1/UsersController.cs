@@ -8,10 +8,12 @@ using SimpleUser.API.DTOs;
 using SimpleUser.API.Services;
 using SimpleUser.API.Validators;
 
-namespace SimpleUser.API.Controllers
+namespace SimpleUser.API.Controllers.v1
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    //[ModelValidator]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -27,7 +29,7 @@ namespace SimpleUser.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PaginatedList<UserDto>>> Index([FromQuery] PageInfoDto pageInfo) 
+        public async Task<ActionResult<PaginatedList<UserDto>>> Index([FromQuery] PageInfoDto pageInfo)
         {
             PaginatedList<UserDto> users = await _userService.FindAllByPageAsync(pageInfo.PageSize, pageInfo.PageIndex, pageInfo.Filter);
             if (users == null)
@@ -68,17 +70,16 @@ namespace SimpleUser.API.Controllers
         //}
 
         [HttpPost]
-        public async Task<ActionResult<int>> Create(UserCreateDto userCreateDto)
+        public async Task<IActionResult> Create(UserCreateDto userCreateDto)
         {
             try
             {
                 ValidationResult result = await _validatorCreate.ValidateAsync(userCreateDto);
                 if (!result.IsValid)
                 {
-                    return Unauthorized();
+                    return Unauthorized(result);
                 }
-                int id = await _userService.InsertAsync(userCreateDto);
-                return Ok();
+                return Ok(await _userService.InsertAsync(userCreateDto));
             }
             catch
             {

@@ -24,7 +24,7 @@ namespace SimpleUser.MVC.Controllers
         }
 
         // GET: Users
-        public IActionResult Index([FromQuery] IndexVM indexVM)
+        public IActionResult Index(IndexVM indexVM)
         {
             if (string.IsNullOrEmpty(indexVM.Filter))
             {
@@ -79,8 +79,12 @@ namespace SimpleUser.MVC.Controllers
                 result.AddToModelState(this.ModelState);
                 return View(userCreateDto);
             }
-            int id = await _userService.InsertAsync(userCreateDto);
-            return RedirectToAction(nameof(Details), new { id = id });
+            int status = await _userService.InsertAsync(userCreateDto);
+            if(status == 1)
+            {
+                return RedirectToAction("Index");
+            }
+            return View(userCreateDto);
         }
 
         // GET: Users/Edit/5
@@ -105,7 +109,7 @@ namespace SimpleUser.MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Email," +
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Email,OldPassword,NewPassword,ConfirmNewPassword," +
             "UserDetailDto")] UserUpdateDto userUpdateDto)
         {
             if (id != userUpdateDto.Id)
@@ -119,8 +123,12 @@ namespace SimpleUser.MVC.Controllers
                 result.AddToModelState(this.ModelState);
                 return View(userUpdateDto);
             }
-            int userId = await _userService.UpdateAsync(userUpdateDto);
-            return RedirectToAction(nameof(Details), new { id = userId });
+            int status = await _userService.UpdateAsync(userUpdateDto);
+            if (status == 1)
+            {
+                return RedirectToAction("Index");
+            }
+            return View(userUpdateDto);
         }
 
         // GET: Users/Delete/5
@@ -154,14 +162,14 @@ namespace SimpleUser.MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [AcceptVerbs("GET", "POST")]
-        public IActionResult IsUserAlreadyExists(string Email)
-        {
-            if (_userService.IsUserAlreadyExistsByEmail(Email))
-            {
-                return Json($"Email {Email} is already in use.");
-            }
-            return Json(true);
-        }
+        //[AcceptVerbs("GET", "POST")]
+        //public IActionResult IsUserAlreadyExists(string Email)
+        //{
+        //    if (_userService.IsUserAlreadyExistsByEmail(Email))
+        //    {
+        //        return Json($"Email {Email} is already in use.");
+        //    }
+        //    return Json(true);
+        //}
     }
 }

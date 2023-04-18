@@ -22,12 +22,12 @@ namespace SimpleUser.API.Validators
                 .WithMessage("Please enter a valid email address");
             RuleFor(x => x.Password)
                 .NotNull()
-                .WithMessage("Email cannot be empty")
+                .WithMessage("Password cannot be empty")
                 .MaximumLength(50)
                 .WithMessage("Password should no more than 50 character");
             RuleFor(x => x.ConfirmPassword)
                 .NotNull()
-                .WithMessage("Email cannot be empty");
+                .WithMessage("Confirm Password cannot be empty");
             RuleFor(x => x).Custom((x, context) =>
             {
                 if (x.Password != x.ConfirmPassword)

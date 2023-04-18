@@ -32,6 +32,9 @@ namespace SimpleUser.API.Profiles
                .ForMember(
                    dest => dest.UserDetail,
                    opt => opt.MapFrom(src => src.UserDetailDto)
+               ).ForMember(
+                   dest => dest.Password,
+                   opt => opt.MapFrom(src => src.NewPassword)
                );
             CreateMap<User, UserUpdateDto>()
                 .ForMember(

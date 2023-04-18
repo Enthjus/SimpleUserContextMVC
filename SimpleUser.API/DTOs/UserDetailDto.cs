@@ -1,6 +1,8 @@
-﻿namespace SimpleUser.API.DTOs
+﻿using SimpleUser.API.Validators;
+
+namespace SimpleUser.API.DTOs
 {
-    public class UserDetailDto
+    public class UserDetailDto : BaseValidationModel<UserDetailDto>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

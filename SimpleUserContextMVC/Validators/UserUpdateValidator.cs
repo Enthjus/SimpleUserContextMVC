@@ -14,6 +14,13 @@ namespace SimpleUser.MVC.Validators
                 .WithMessage("Username cannot be empty")
                 .MaximumLength(50)
                 .WithMessage("Username should no more than 50 character");
+            RuleFor(x => x).Custom((x, context) =>
+            {
+                if (x.NewPassword != x.ConfirmNewPassword)
+                {
+                    context.AddFailure(nameof(x.ConfirmNewPassword), "Confirm password must match with password");
+                }
+            });
             RuleFor(x => x.Email)
                 .NotNull()
                 .WithMessage("Email cannot be empty")

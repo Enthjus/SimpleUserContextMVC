@@ -26,12 +26,12 @@ namespace SimpleUser.MVC.ViewComponents
             PaginatedList<UserDto> pageList = null;
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:7037/");
+                client.BaseAddress = new Uri("https://localhost:7037/");
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 //GET Method
                 HttpResponseMessage response = await client.GetAsync(
-                    $"Users?PageSize={indexVM.PageSize}&PageIndex={indexVM.PageIndex}&Filter={indexVM.Filter}");
+                    $"api/v1/Users?PageSize={indexVM.PageSize}&PageIndex={indexVM.PageIndex}&Filter={indexVM.Filter}");
                 if (response.IsSuccessStatusCode)
                 {
                     pageList = await response.Content.ReadFromJsonAsync<PaginatedList<UserDto>>();

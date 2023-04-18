@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using SimpleUser.API.DTOs;
 using SimpleUser.API.Services;
@@ -19,6 +20,15 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IValidator<UserCreateDto>, UserCreateValidator>();
 builder.Services.AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>();
+builder.Services.AddApiVersioning(opt =>
+{
+    opt.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+    opt.AssumeDefaultVersionWhenUnspecified = true;
+    opt.ReportApiVersions = true;
+    opt.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
+                                                    new HeaderApiVersionReader("x-api-version"),
+                                                    new MediaTypeApiVersionReader("x-api-version"));
+});
 
 var app = builder.Build();
 
