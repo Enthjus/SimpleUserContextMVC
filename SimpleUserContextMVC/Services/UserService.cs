@@ -73,36 +73,37 @@ namespace SimpleUser.MVC.Services
             return userDto;
         }
 
-        public async Task<int> InsertAsync(UserCreateDto userCreateDto)
+        public async Task<ValidationErrorDto> InsertAsync(UserCreateDto userCreateDto)
         {
             //var content = new StringContent(userCreateDto.ToString(), Encoding.UTF8, "application/json");
             var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/v1/Users", userCreateDto);
-            var result = httpResponseMessage.Content.ReadAsStringAsync();
+            var result = await httpResponseMessage.Content.ReadAsStringAsync();
+            ValidationErrorDto errorDto = new ValidationErrorDto();
             if (httpResponseMessage.IsSuccessStatusCode)
             {
-                return int.Parse(await httpResponseMessage.Content.ReadAsStringAsync());
+                errorDto.Id = int.Parse(result);
+                return errorDto;
             }
-            else
-            {
-                return 0;
-            }
+            errorDto = JsonConvert.DeserializeObject<ValidationErrorDto>(result);
+            return errorDto;
             //User user = _mapper.Map<User>(userCreateDto);
             //var entry = _context.Users.Add(user);
             //await _context.SaveChangesAsync();
             //entry.Entity.Id;
         }
 
-        public async Task<int> UpdateAsync(UserUpdateDto userUpdateDto)
+        public async Task<ValidationErrorDto> UpdateAsync(UserUpdateDto userUpdateDto)
         {
             var httpResponseMessage = await _httpClient.PutAsJsonAsync("api/v1/Users", userUpdateDto);
+            var result = await httpResponseMessage.Content.ReadAsStringAsync();
+            ValidationErrorDto errorDto = new ValidationErrorDto();
             if (httpResponseMessage.IsSuccessStatusCode)
             {
-                return 1;
+                errorDto.Id = int.Parse(result);
+                return errorDto;
             }
-            else
-            {
-                return 0;
-            }
+            errorDto = JsonConvert.DeserializeObject<ValidationErrorDto>(result);
+            return errorDto;
             //var oldUser = await FindByIdAsync(userUpdateDto.Id);
             //var entry = _context.Users.Update(oldUser);
             //entry.CurrentValues.SetValues(userUpdateDto);

@@ -27,29 +27,10 @@ namespace SimpleUser.API.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IList<UserDto>> FindAllAsync()
-        {
-            var users = await _context.Users.Include(x => x.UserDetail).AsNoTracking().ToListAsync();
-            var userDtos = _mapper.Map<List<UserDto>>(users);
-            return userDtos;
-        }
-
         public async Task<User> FindByIdAsync(int id)
         {
             User user = await _context.Users.Include(x => x.UserDetail).FirstOrDefaultAsync(u => u.Id == id);
             return user;
-        }
-
-        public async Task<IList<UserDto>> FindAsync(string keyword)
-        {
-            var users = await _context.Users.Include(x => x.UserDetail)
-                .Where(u => u.UserDetail.LastName.ToUpper().Contains(keyword.ToUpper()) ||
-                u.UserDetail.FirstName.ToUpper().Contains(keyword.ToUpper()) ||
-                u.UserDetail.PhoneNumber.Contains(keyword) ||
-                u.Email.ToUpper().Contains(keyword.ToUpper()))
-                .ToListAsync();
-            IList<UserDto> userDtos = _mapper.Map<List<UserDto>>(users);
-            return userDtos;
         }
 
         public async Task<UserDto> FindUserDtoByIdAsync(int id)
@@ -71,30 +52,19 @@ namespace SimpleUser.API.Services
         public async Task<int> UpdateAsync(UserUpdateDto userUpdateDto)
         {
             var oldUser = await FindByIdAsync(userUpdateDto.Id);
-            if(!string.IsNullOrEmpty(userUpdateDto.NewPassword) & !string.IsNullOrEmpty(userUpdateDto.OldPassword))
-            {
-                if (!BCrypt.Net.BCrypt.Verify(userUpdateDto.OldPassword, oldUser.Password))
-                {
-                    throw new Exception("Old password is Invalid");
-                }
-
-            }
             var newUser = _mapper.Map<User>(userUpdateDto);
             if (string.IsNullOrEmpty(newUser.Password))
             {
                 newUser.Password = oldUser.Password;
             }
+            else
+            {
+                newUser.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
+            }
             var entry = _context.Users.Update(oldUser);
             entry.CurrentValues.SetValues(newUser);
             await _context.SaveChangesAsync();
             return entry.Entity.Id;
-        }
-
-        public async Task<UserUpdateDto> FindUserUpdateByIdAsync(int id)
-        {
-            var user = await FindByIdAsync(id);
-            UserUpdateDto userUpdate = _mapper.Map<UserUpdateDto>(user);
-            return userUpdate;
         }
 
         public bool IsUserAlreadyExistsByEmail(string email, int id = 0)
@@ -143,10 +113,16 @@ namespace SimpleUser.API.Services
             return pageList;
         }
 
-        public bool IsZeroOrNull(int num)
+        public bool IsZeroOrNull(int? num)
         {
             if(num == 0 || num == null) return true;
             return false;
+        }
+
+        public User FindById(int id)
+        {
+            User user = _context.Users.Include(x => x.UserDetail).FirstOrDefault(u => u.Id == id);
+            return user;
         }
     }
 }

@@ -10,8 +10,8 @@ namespace SimpleUser.MVC.Services
         Task<UserDto> FindUserDtoByIdAsync(int id);
         Task<UserUpdateDto> FindUserUpdateByIdAsync(int id);
         //Task<IList<UserDto>> FindAsync(string keyword);
-        Task<int> InsertAsync(UserCreateDto userCreateDto);
-        Task<int> UpdateAsync(UserUpdateDto userUpdateDto);
+        Task<ValidationErrorDto> InsertAsync(UserCreateDto userCreateDto);
+        Task<ValidationErrorDto> UpdateAsync(UserUpdateDto userUpdateDto);
         Task DeleteAsync(int id);
         //bool IsUserAlreadyExistsByEmail(string email);
         bool IsNullOrZero(int num);

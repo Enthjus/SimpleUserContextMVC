@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SimpleUser.MVC.DTOs;
@@ -73,18 +74,19 @@ namespace SimpleUser.MVC.Controllers
         public async Task<IActionResult> Create([Bind("Username,Email,Password,ConfirmPassword," +
             "UserDetailDto")] UserCreateDto userCreateDto)
         {
-            ValidationResult result = await _validatorCreate.ValidateAsync(userCreateDto);
-            if (!result.IsValid)
+            //ValidationResult result = await _validatorCreate.ValidateAsync(userCreateDto);
+            //if (!result.IsValid)
+            //{
+            //    result.AddToModelState(this.ModelState);
+            //    return View(userCreateDto);
+            //}
+            ValidationErrorDto apiResult = await _userService.InsertAsync(userCreateDto);
+            if(apiResult.status == 400)
             {
-                result.AddToModelState(this.ModelState);
+                apiResult.AddToModelState(this.ModelState);
                 return View(userCreateDto);
             }
-            int status = await _userService.InsertAsync(userCreateDto);
-            if(status == 1)
-            {
-                return RedirectToAction("Index");
-            }
-            return View(userCreateDto);
+            return RedirectToAction("Details", new { id = apiResult.Id });
         }
 
         // GET: Users/Edit/5
@@ -123,12 +125,13 @@ namespace SimpleUser.MVC.Controllers
                 result.AddToModelState(this.ModelState);
                 return View(userUpdateDto);
             }
-            int status = await _userService.UpdateAsync(userUpdateDto);
-            if (status == 1)
+            ValidationErrorDto apiResult = await _userService.UpdateAsync(userUpdateDto);
+            if (apiResult.status == 400)
             {
-                return RedirectToAction("Index");
+                apiResult.AddToModelState(this.ModelState);
+                return View(userUpdateDto);
             }
-            return View(userUpdateDto);
+            return RedirectToAction("Details", new { id = apiResult.Id });
         }
 
         // GET: Users/Delete/5

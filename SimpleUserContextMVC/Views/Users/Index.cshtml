@@ -12,7 +12,20 @@
     <p>
         Name: <input type="text" name="Filter" value="@Model.Filter" />
         <br />
-        Page size: <input type="text" name="PageSize" value="@Model.PageSize" />
+        Page size:
+        <select name="PageSize" value="@Model.PageSize" />
+        @for(int i = 4; i <= 10; i++)
+        {
+            if(i == Model.PageSize)
+            {
+                <option value="@i" selected>@i</option>
+            }
+            else
+            {
+                <option value="@i">@i</option>
+            }
+        }
+        </select>
         <input type="submit" value="Filter" />
     </p>
 </form>

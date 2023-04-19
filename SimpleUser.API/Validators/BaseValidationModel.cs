@@ -1,4 +1,7 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace SimpleUser.API.Validators
 {
@@ -11,7 +14,7 @@ namespace SimpleUser.API.Validators
 
             if (!result.IsValid && result.Errors.Any())
             {
-                throw new ValidationException(result.Errors);
+                throw new FluentValidation.ValidationException(result.Errors);
             }
         }
     }
