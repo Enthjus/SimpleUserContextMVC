@@ -8,7 +8,6 @@ namespace SimpleUser.API.Services
         Task<User> FindByIdAsync(int id);
         User FindById(int id);
         Task<UserDto> FindUserDtoByIdAsync(int id);
-        Task<UserUpdateDto> FindUserUpdateByIdAsync(int id);
         Task<int> InsertAsync(UserCreateDto userCreateDto);
         Task<int> UpdateAsync(UserUpdateDto userUpdateDto);
         Task DeleteAsync(int id);
