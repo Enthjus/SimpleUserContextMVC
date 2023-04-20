@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace SimpleUser.MVC.DTOs
+﻿namespace SimpleUser.MVC.DTOs
 {
     public class UserCreateDto
     {

@@ -124,5 +124,15 @@ namespace SimpleUser.API.Services
             User user = _context.Users.Include(x => x.UserDetail).FirstOrDefault(u => u.Id == id);
             return user;
         }
+
+        public async Task<User> Login(string email, string password)
+        {
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if(user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
+            {
+                return user;
+            }
+            return null;
+        }
     }
 }

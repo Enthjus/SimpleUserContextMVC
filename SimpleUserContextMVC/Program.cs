@@ -1,10 +1,7 @@
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using SimpleUser.MVC.DTOs;
 using SimpleUser.MVC.Services;
 using SimpleUser.MVC.Validators;
-using SimpleUser.Persistence.Data;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,12 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services
 .AddHttpClient();
-//builder.Services.AddDbContext<ApplicationContext>(options =>
-//  options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
 builder.Services.AddScoped<IUserService, UserService>();
-//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IValidator<UserDto>, UserValidator>();
 builder.Services.AddScoped<IValidator<UserCreateDto>, UserCreateValidator>();
 builder.Services.AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>();
 
@@ -35,15 +28,6 @@ else
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 }
-
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-
-//    var context = services.GetRequiredService<ApplicationContext>();
-//    //context.Database.EnsureCreated();
-//    DbInitializer.Initialize(context);
-//}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

@@ -1,30 +1,27 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using SimpleUser.Domain.Entities;
-using SimpleUser.MVC.Models;
-using SimpleUser.MVC.DTOs;
-using SimpleUser.Persistence.Data;
-using System.Net.Http.Headers;
-using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
-using System.Text;
+using NuGet.Common;
+using SimpleUser.MVC.DTOs;
+using SimpleUser.MVC.Models;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace SimpleUser.MVC.Services
 {
     public class UserService : IUserService
     {
-        //private readonly ApplicationContext _context;
         private readonly IMapper _mapper;
         private HttpClient _httpClient;
+        string token;
 
         public UserService(HttpClient httpClient, IMapper mapper)
         {
-            //_context = context;
-            //_mapper = mapper;
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("https://localhost:7037/");
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             _mapper = mapper;
         }
 
@@ -33,49 +30,19 @@ namespace SimpleUser.MVC.Services
             await _httpClient.DeleteAsync($"api/v1/Users/{id}");
         }
 
-        //public async Task<PaginatedList<UserDto>> FindAllAsync()
-        //{
-        //    HttpResponseMessage response = await _httpClient.GetAsync(
-        //            @"Users?PageSize=10&PageIndex=1&Filter=""");
-        //    PaginatedList<UserDto> pageList = await response.Content.ReadFromJsonAsync<PaginatedList<UserDto>>();
-        //    return pageList;
-        //}
-
-        //public async Task<User> FindByIdAsync(int id)
-        //{
-        //    User user = await _context.Users.Include(x => x.UserDetail).FirstOrDefaultAsync(u => u.Id == id);
-        //    return user;
-        //}
-
-        //public async Task<IList<UserDto>> FindAsync(string keyword)
-        //{
-        //    var users = await _context.Users.Include(x => x.UserDetail)
-        //        .Where(u => u.UserDetail.LastName.ToUpper().Contains(keyword.ToUpper()) ||
-        //        u.UserDetail.FirstName.ToUpper().Contains(keyword.ToUpper()) ||
-        //        u.UserDetail.PhoneNumber.Contains(keyword) ||
-        //        u.Email.ToUpper().Contains(keyword.ToUpper()))
-        //        .ToListAsync();
-        //    IList<UserDto> userDtos = _mapper.Map<List<UserDto>>(users);
-        //    return userDtos;
-        //}
-
         public async Task<UserDto> FindUserDtoByIdAsync(int id)
         {
-            // New code:
             HttpResponseMessage response = await _httpClient.GetAsync($"api/v1/Users/{id}");
             UserDto userDto = null;
             if (response.IsSuccessStatusCode)
             {
                 userDto = await response.Content.ReadFromJsonAsync<UserDto>();
             }
-            //User user = await FindByIdAsync(id);
-            //UserDto userDto = _mapper.Map<UserDto>(user);
             return userDto;
         }
 
         public async Task<ValidationErrorDto> InsertAsync(UserCreateDto userCreateDto)
         {
-            //var content = new StringContent(userCreateDto.ToString(), Encoding.UTF8, "application/json");
             var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/v1/Users", userCreateDto);
             var result = await httpResponseMessage.Content.ReadAsStringAsync();
             ValidationErrorDto errorDto = new ValidationErrorDto();
@@ -86,10 +53,6 @@ namespace SimpleUser.MVC.Services
             }
             errorDto = JsonConvert.DeserializeObject<ValidationErrorDto>(result);
             return errorDto;
-            //User user = _mapper.Map<User>(userCreateDto);
-            //var entry = _context.Users.Add(user);
-            //await _context.SaveChangesAsync();
-            //entry.Entity.Id;
         }
 
         public async Task<ValidationErrorDto> UpdateAsync(UserUpdateDto userUpdateDto)
@@ -104,11 +67,6 @@ namespace SimpleUser.MVC.Services
             }
             errorDto = JsonConvert.DeserializeObject<ValidationErrorDto>(result);
             return errorDto;
-            //var oldUser = await FindByIdAsync(userUpdateDto.Id);
-            //var entry = _context.Users.Update(oldUser);
-            //entry.CurrentValues.SetValues(userUpdateDto);
-            //await _context.SaveChangesAsync();
-            //return entry.Entity.Id;
         }
 
         public async Task<UserUpdateDto> FindUserUpdateByIdAsync(int id)
@@ -118,14 +76,36 @@ namespace SimpleUser.MVC.Services
             return userUpdate;
         }
 
-        //public bool IsUserAlreadyExistsByEmail(string email)
-        //{
-        //    return _context.Users.Any(x => x.Email == email);
-        //}
-
-        public bool IsNullOrZero(int num)
+        public bool IsNullOrZero(int? num)
         {
             return num == 0 || num == null;
+        }
+
+        public async Task<bool> LoginAsync(LoginDto loginDto)
+        {
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/v1/Login", loginDto);
+            if(httpResponseMessage.IsSuccessStatusCode)
+            {
+                var result = await httpResponseMessage.Content.ReadAsStringAsync();
+                token = result.TrimEnd('"').TrimStart('"');
+                if (!string.IsNullOrEmpty(token))
+                {
+                    _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<PaginatedList<UserDto>> FindAllAsync(IndexVM indexVM)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(
+                    $"api/v1/Users?PageSize={indexVM.PageSize}&PageIndex={indexVM.PageIndex}&Filter={indexVM.Filter}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<PaginatedList<UserDto>>();
+            }
+            return null;
         }
     }
 }

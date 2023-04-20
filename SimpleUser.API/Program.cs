@@ -23,8 +23,8 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddScoped<IValidator<UserCreateDto>, UserCreateValidator>();
-builder.Services.AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>();
+//builder.Services.AddScoped<IValidator<UserCreateDto>, UserCreateValidator>();
+//builder.Services.AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>();
 builder.Services.AddApiVersioning(opt =>
 {
     opt.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleUser.API.DTOs;
 using SimpleUser.API.Services;
@@ -10,13 +11,14 @@ using SimpleUser.API.Validators;
 
 namespace SimpleUser.API.Controllers.v1
 {
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     //[ModelValidator]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private IUserService _userService;
         //private IValidator<UserCreateDto> _validatorCreate;
         //private IValidator<UserUpdateDto> _validatorUpdate;
 

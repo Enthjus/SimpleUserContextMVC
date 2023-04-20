@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SimpleUser.MVC.DTOs;
 using SimpleUser.MVC.Models;
+using SimpleUser.MVC.Services;
 using System.Diagnostics;
 
 namespace SimpleUser.MVC.Controllers
@@ -7,10 +9,12 @@ namespace SimpleUser.MVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private IUserService _userService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IUserService userService)
         {
             _logger = logger;
+            _userService = userService;
         }
 
         public IActionResult Index()
@@ -27,6 +31,20 @@ namespace SimpleUser.MVC.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public async Task<IActionResult> Login(LoginDto loginDto) 
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(loginDto);
+            }
+            var status = await _userService.LoginAsync(loginDto);
+            if (status)
+            {
+                return RedirectToAction(controllerName: "Users", actionName: "Index");
+            }
+            return View(loginDto);
         }
     }
 }

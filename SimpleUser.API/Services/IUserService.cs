@@ -13,5 +13,6 @@ namespace SimpleUser.API.Services
         Task DeleteAsync(int id);
         bool IsUserAlreadyExistsByEmail(string email, int id = 0);
         Task<PaginatedList<UserDto>> FindAllByPageAsync(int pageSize,  int pageIndex, string filter);
+        Task<User> Login(string email, string password);
     }
 }

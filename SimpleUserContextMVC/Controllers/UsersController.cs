@@ -1,8 +1,5 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SimpleUser.MVC.DTOs;
 using SimpleUser.MVC.Models;
 using SimpleUser.MVC.Services;
@@ -16,15 +13,13 @@ namespace SimpleUser.MVC.Controllers
         private IValidator<UserCreateDto> _validatorCreate;
         private IValidator<UserUpdateDto> _validatorUpdate;
 
-        public UsersController(IUserService userService, IValidator<UserCreateDto> validatorCreate,
-            IValidator<UserUpdateDto> validatorUpdate)
+        public UsersController(IUserService userService, IValidator<UserCreateDto> validatorCreate, IValidator<UserUpdateDto> validatorUpdate)
         {
             _userService = userService;
             _validatorCreate = validatorCreate;
             _validatorUpdate = validatorUpdate;
         }
 
-        // GET: Users
         public IActionResult Index(IndexVM indexVM)
         {
             if (string.IsNullOrEmpty(indexVM.Filter))
@@ -42,7 +37,6 @@ namespace SimpleUser.MVC.Controllers
             return View("Index", indexVM);
         }
 
-        // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -60,26 +54,22 @@ namespace SimpleUser.MVC.Controllers
             return View(userVM);
         }
 
-        // GET: Users/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Username,Email,Password,ConfirmPassword," +
             "UserDetailDto")] UserCreateDto userCreateDto)
         {
-            //ValidationResult result = await _validatorCreate.ValidateAsync(userCreateDto);
-            //if (!result.IsValid)
-            //{
-            //    result.AddToModelState(this.ModelState);
-            //    return View(userCreateDto);
-            //}
+            var result = _validatorCreate.Validate(userCreateDto);
+            if (!result.IsValid)
+            {
+                result.AddToModelState(this.ModelState);
+                return View(userCreateDto);
+            }
             ValidationErrorDto apiResult = await _userService.InsertAsync(userCreateDto);
             if(apiResult.status == 400)
             {
@@ -89,7 +79,6 @@ namespace SimpleUser.MVC.Controllers
             return RedirectToAction("Details", new { id = apiResult.Id });
         }
 
-        // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -106,9 +95,6 @@ namespace SimpleUser.MVC.Controllers
             return View(userVM);
         }
 
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Email,OldPassword,NewPassword,ConfirmNewPassword," +
@@ -118,8 +104,7 @@ namespace SimpleUser.MVC.Controllers
             {
                 return NotFound();
             }
-            ValidationResult result = await _validatorUpdate.ValidateAsync(userUpdateDto);
-
+            var result = _validatorUpdate.Validate(userUpdateDto);
             if (!result.IsValid)
             {
                 result.AddToModelState(this.ModelState);
@@ -134,7 +119,6 @@ namespace SimpleUser.MVC.Controllers
             return RedirectToAction("Details", new { id = apiResult.Id });
         }
 
-        // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -152,7 +136,6 @@ namespace SimpleUser.MVC.Controllers
             return View(userVM);
         }
 
-        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -164,15 +147,5 @@ namespace SimpleUser.MVC.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
-        //[AcceptVerbs("GET", "POST")]
-        //public IActionResult IsUserAlreadyExists(string Email)
-        //{
-        //    if (_userService.IsUserAlreadyExistsByEmail(Email))
-        //    {
-        //        return Json($"Email {Email} is already in use.");
-        //    }
-        //    return Json(true);
-        //}
     }
 }

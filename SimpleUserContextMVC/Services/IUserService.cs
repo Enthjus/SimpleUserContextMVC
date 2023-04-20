@@ -1,19 +1,17 @@
-﻿using SimpleUser.Domain.Entities;
-using SimpleUser.MVC.DTOs;
+﻿using SimpleUser.MVC.DTOs;
+using SimpleUser.MVC.Models;
 
 namespace SimpleUser.MVC.Services
 {
     public interface IUserService
     {
-        //Task<PaginatedList<UserDto>> FindAllAsync();
-        //Task<User> FindByIdAsync(int id);
         Task<UserDto> FindUserDtoByIdAsync(int id);
         Task<UserUpdateDto> FindUserUpdateByIdAsync(int id);
-        //Task<IList<UserDto>> FindAsync(string keyword);
         Task<ValidationErrorDto> InsertAsync(UserCreateDto userCreateDto);
         Task<ValidationErrorDto> UpdateAsync(UserUpdateDto userUpdateDto);
         Task DeleteAsync(int id);
-        //bool IsUserAlreadyExistsByEmail(string email);
-        bool IsNullOrZero(int num);
+        bool IsNullOrZero(int? num);
+        Task<bool> LoginAsync(LoginDto loginDto);
+        Task<PaginatedList<UserDto>> FindAllAsync(IndexVM indexVM);
     }
 }
