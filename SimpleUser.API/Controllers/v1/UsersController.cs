@@ -6,6 +6,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleUser.API.DTOs;
+using SimpleUser.API.Heplers;
 using SimpleUser.API.Services;
 using SimpleUser.API.Validators;
 
@@ -19,12 +20,14 @@ namespace SimpleUser.API.Controllers.v1
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
+        private IJwtService _jwtService;
         //private IValidator<UserCreateDto> _validatorCreate;
         //private IValidator<UserUpdateDto> _validatorUpdate;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, IJwtService jwtService)
         {
             _userService = userService;
+            _jwtService = jwtService;
             //_validatorCreate = validatorCreate;
             //_validatorUpdate = validatorUpdate;
         }

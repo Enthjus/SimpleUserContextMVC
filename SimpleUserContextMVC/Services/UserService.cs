@@ -81,20 +81,15 @@ namespace SimpleUser.MVC.Services
             return num == 0 || num == null;
         }
 
-        public async Task<bool> LoginAsync(LoginDto loginDto)
+        public async Task<JwtTokenDto> LoginAsync(LoginDto loginDto)
         {
             var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/v1/Login", loginDto);
             if(httpResponseMessage.IsSuccessStatusCode)
             {
-                var result = await httpResponseMessage.Content.ReadAsStringAsync();
-                token = result.TrimEnd('"').TrimStart('"');
-                if (!string.IsNullOrEmpty(token))
-                {
-                    _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
-                }
-                return true;
+                var result = await httpResponseMessage.Content.ReadFromJsonAsync<JwtTokenDto>();
+                return result;
             }
-            return false;
+            return null;
         }
 
         public async Task<PaginatedList<UserDto>> FindAllAsync(IndexVM indexVM)

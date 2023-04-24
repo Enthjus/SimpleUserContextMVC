@@ -39,8 +39,18 @@ namespace SimpleUser.MVC.Controllers
             {
                 return View(loginDto);
             }
-            var status = await _userService.LoginAsync(loginDto);
-            if (status)
+            JwtTokenDto jwtToken = await _userService.LoginAsync(loginDto);
+            Response.Cookies.Append("AccessToken", jwtToken.AccessToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = jwtToken.ExpirationToken
+            });
+            Response.Cookies.Append("RefreshToken", jwtToken.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = jwtToken.ExpirationRefreshToken
+            });
+            if (true)
             {
                 return RedirectToAction(controllerName: "Users", actionName: "Index");
             }

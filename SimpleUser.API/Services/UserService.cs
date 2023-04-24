@@ -113,7 +113,7 @@ namespace SimpleUser.API.Services
             return pageList;
         }
 
-        public bool IsZeroOrNull(int? num)
+        private bool IsZeroOrNull(int? num)
         {
             if(num == 0 || num == null) return true;
             return false;

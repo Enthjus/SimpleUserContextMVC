@@ -11,7 +11,7 @@ namespace SimpleUser.MVC.Services
         Task<ValidationErrorDto> UpdateAsync(UserUpdateDto userUpdateDto);
         Task DeleteAsync(int id);
         bool IsNullOrZero(int? num);
-        Task<bool> LoginAsync(LoginDto loginDto);
+        Task<JwtTokenDto> LoginAsync(LoginDto loginDto);
         Task<PaginatedList<UserDto>> FindAllAsync(IndexVM indexVM);
     }
 }
