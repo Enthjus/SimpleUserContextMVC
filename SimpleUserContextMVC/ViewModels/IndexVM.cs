@@ -1,4 +1,4 @@
-﻿namespace SimpleUser.MVC.Models
+﻿namespace SimpleUser.MVC.ViewModels
 {
     public class IndexVM
     {

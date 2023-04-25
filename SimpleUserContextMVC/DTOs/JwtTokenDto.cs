@@ -1,10 +1,10 @@
-﻿namespace SimpleUser.MVC.DTOs
+﻿using SimpleUser.MVC.Auths;
+
+namespace SimpleUser.MVC.DTOs
 {
     public class JwtTokenDto
     {
-        public string AccessToken { get; set; }
-        public DateTime ExpirationToken { get; set; }
-        public string RefreshToken { get; set; }
-        public DateTime ExpirationRefreshToken { get; set; }
+        public AccessToken AccessToken { get; set; }
+        public RefreshToken RefreshToken { get; set; }
     }
 }

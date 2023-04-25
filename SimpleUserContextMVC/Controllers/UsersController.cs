@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using SimpleUser.MVC.DTOs;
-using SimpleUser.MVC.Models;
 using SimpleUser.MVC.Services;
 using SimpleUser.MVC.Validators;
+using SimpleUser.MVC.ViewModels;
 
 namespace SimpleUser.MVC.Controllers
 {

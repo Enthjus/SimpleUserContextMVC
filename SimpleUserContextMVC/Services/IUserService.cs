@@ -1,5 +1,5 @@
 ﻿using SimpleUser.MVC.DTOs;
-using SimpleUser.MVC.Models;
+using SimpleUser.MVC.ViewModels;
 
 namespace SimpleUser.MVC.Services
 {

@@ -1,8 +1,5 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Components.Forms;
 using SimpleUser.MVC.DTOs;
-using SimpleUser.MVC.Services;
-using SimpleUser.Persistence.Data;
 
 namespace SimpleUser.MVC.Validators
 {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using SimpleUser.API.Auths;
 using SimpleUser.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,7 +17,7 @@ namespace SimpleUser.API.Heplers
             _configuration = configuration;
         }
 
-        public JwtSecurityToken Generate(int id, string username)
+        public JwtSecurityToken Generate(int id)
         {
             var claims = new[]
             {
@@ -38,12 +39,18 @@ namespace SimpleUser.API.Heplers
             return token;
         }
 
-        public string GenerateRefreshToken()
+        public RefreshToken GenerateRefreshToken()
         {
             var randomNumber = new byte[64];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
-            return Convert.ToBase64String(randomNumber);
+            RefreshToken refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(randomNumber),
+                Created = DateTime.UtcNow,
+                Expiration = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("Jwt:RefreshTokenValidityInDays"))
+            };
+            return refreshToken;
         }
 
         public ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)

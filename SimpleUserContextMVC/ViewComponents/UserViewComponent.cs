@@ -1,12 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SimpleUser.Domain.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
 using SimpleUser.MVC.DTOs;
-using SimpleUser.MVC.Models;
 using SimpleUser.MVC.Services;
-using SimpleUser.Persistence.Data;
-using System.Net.Http.Headers;
+using SimpleUser.MVC.ViewModels;
 
 namespace SimpleUser.MVC.ViewComponents
 {

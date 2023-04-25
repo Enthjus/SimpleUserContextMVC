@@ -1,6 +1,6 @@
 ﻿using SimpleUser.MVC.DTOs;
 
-namespace SimpleUser.MVC.Models
+namespace SimpleUser.MVC.ViewModels
 {
     public class UserVM
     {

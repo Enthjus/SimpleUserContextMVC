@@ -1,14 +1,11 @@
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SimpleUser.API.DTOs;
 using SimpleUser.API.Heplers;
 using SimpleUser.API.Services;
-using SimpleUser.API.Validators;
 using SimpleUser.Persistence.Data;
 using System.Text;
 

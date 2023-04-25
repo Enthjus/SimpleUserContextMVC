@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using NuGet.Common;
 using SimpleUser.MVC.DTOs;
-using SimpleUser.MVC.Models;
+using SimpleUser.MVC.ViewModels;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -83,7 +83,7 @@ namespace SimpleUser.MVC.Services
 
         public async Task<JwtTokenDto> LoginAsync(LoginDto loginDto)
         {
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/v1/Login", loginDto);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/v1/Auth/login", loginDto);
             if(httpResponseMessage.IsSuccessStatusCode)
             {
                 var result = await httpResponseMessage.Content.ReadFromJsonAsync<JwtTokenDto>();
