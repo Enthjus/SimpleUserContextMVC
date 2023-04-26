@@ -1,16 +1,14 @@
 ﻿using AutoMapper;
 using Newtonsoft.Json;
-using NuGet.Common;
 using SimpleUser.MVC.DTOs;
 using SimpleUser.MVC.ViewModels;
-using System.Diagnostics;
-using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace SimpleUser.MVC.Services
 {
     public class UserService : IUserService
     {
+        #region CallApi
         private readonly IMapper _mapper;
         private HttpClient _httpClient;
         string token;
@@ -21,7 +19,6 @@ namespace SimpleUser.MVC.Services
             _httpClient.BaseAddress = new Uri("https://localhost:7037/");
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             _mapper = mapper;
         }
 
@@ -84,7 +81,7 @@ namespace SimpleUser.MVC.Services
         public async Task<JwtTokenDto> LoginAsync(LoginDto loginDto)
         {
             var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/v1/Auth/login", loginDto);
-            if(httpResponseMessage.IsSuccessStatusCode)
+            if (httpResponseMessage.IsSuccessStatusCode)
             {
                 var result = await httpResponseMessage.Content.ReadFromJsonAsync<JwtTokenDto>();
                 return result;
@@ -102,5 +99,6 @@ namespace SimpleUser.MVC.Services
             }
             return null;
         }
+        #endregion
     }
 }

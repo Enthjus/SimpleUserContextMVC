@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FluentValidation;
-using FluentValidation.Results;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SimpleUser.API.DTOs;
-using SimpleUser.API.Heplers;
 using SimpleUser.API.Services;
-using SimpleUser.API.Validators;
 
 namespace SimpleUser.API.Controllers.v1
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -20,16 +14,10 @@ namespace SimpleUser.API.Controllers.v1
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
-        private IJwtService _jwtService;
-        //private IValidator<UserCreateDto> _validatorCreate;
-        //private IValidator<UserUpdateDto> _validatorUpdate;
 
-        public UsersController(IUserService userService, IJwtService jwtService)
+        public UsersController(IUserService userService)
         {
             _userService = userService;
-            _jwtService = jwtService;
-            //_validatorCreate = validatorCreate;
-            //_validatorUpdate = validatorUpdate;
         }
 
         [HttpGet]

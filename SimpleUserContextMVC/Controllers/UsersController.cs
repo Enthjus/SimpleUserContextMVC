@@ -1,14 +1,18 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SimpleUser.MVC.Core;
 using SimpleUser.MVC.DTOs;
 using SimpleUser.MVC.Services;
 using SimpleUser.MVC.Validators;
 using SimpleUser.MVC.ViewModels;
+using static SimpleUser.MVC.Core.Constants;
 
 namespace SimpleUser.MVC.Controllers
 {
     public class UsersController : Controller
     {
+        #region CallApi
         private readonly IUserService _userService;
         private IValidator<UserCreateDto> _validatorCreate;
         private IValidator<UserUpdateDto> _validatorUpdate;
@@ -54,11 +58,13 @@ namespace SimpleUser.MVC.Controllers
             return View(userVM);
         }
 
+        [Authorize(Roles = $"{Constants.Roles.Manager},{Constants.Roles.Administrator}")]
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Roles = $"{Constants.Roles.Manager},{Constants.Roles.Administrator}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Username,Email,Password,ConfirmPassword," +
@@ -71,7 +77,7 @@ namespace SimpleUser.MVC.Controllers
                 return View(userCreateDto);
             }
             ValidationErrorDto apiResult = await _userService.InsertAsync(userCreateDto);
-            if(apiResult.status == 400)
+            if (apiResult.status == 400)
             {
                 apiResult.AddToModelState(this.ModelState);
                 return View(userCreateDto);
@@ -79,6 +85,7 @@ namespace SimpleUser.MVC.Controllers
             return RedirectToAction("Details", new { id = apiResult.Id });
         }
 
+        [Authorize(Policy = Constants.Policies.SuperAdmin)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,6 +102,7 @@ namespace SimpleUser.MVC.Controllers
             return View(userVM);
         }
 
+        [Authorize(Policy = Constants.Policies.SuperAdmin)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Email,OldPassword,NewPassword,ConfirmNewPassword," +
@@ -119,6 +127,7 @@ namespace SimpleUser.MVC.Controllers
             return RedirectToAction("Details", new { id = apiResult.Id });
         }
 
+        [Authorize(Policy = Constants.Policies.CanDeleteUser)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,6 +145,7 @@ namespace SimpleUser.MVC.Controllers
             return View(userVM);
         }
 
+        [Authorize(Policy = Constants.Policies.CanDeleteUser)]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -147,5 +157,6 @@ namespace SimpleUser.MVC.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+        #endregion
     }
 }

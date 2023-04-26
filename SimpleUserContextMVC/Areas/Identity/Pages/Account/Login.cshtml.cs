@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SimpleUser.MVC.Areas.Identity.Data;
 using System.Security.Claims;
+using static SimpleUser.MVC.Core.Constants;
 
 namespace SimpleUser.MVC.Areas.Identity.Pages.Account
 {
@@ -128,11 +129,19 @@ namespace SimpleUser.MVC.Areas.Identity.Pages.Account
                         new Claim("amr", "pwd")
                     };
 
-                    var roles = await _signInManager.UserManager.GetRolesAsync(user);
-                    if (roles.Any())
+                    //var roles = await _signInManager.UserManager.GetRolesAsync(user);
+                    //if (roles.Any())
+                    //{
+                    //    var roleClaim = string.Join(",", roles);
+                    //    claims.Add(new Claim("Roles", roleClaim));
+                    //}
+                    var claim = await _signInManager.UserManager.GetClaimsAsync(user);
+                    if (claim.Any())
                     {
-                        var roleClaim = string.Join(",", roles);
-                        claims.Add(new Claim("Roles", roleClaim));
+                        foreach(var cl in claim)
+                        {
+                            claims.Add(new Claim(cl.Type, cl.Value));
+                        }
                     }
 
                     await _signInManager.SignInWithClaimsAsync(user, Input.RememberMe, claims);

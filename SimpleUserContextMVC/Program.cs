@@ -1,8 +1,10 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SimpleUser.MVC.Areas.Identity.Data;
+using SimpleUser.MVC.Authorization;
 using SimpleUser.MVC.Data;
 using SimpleUser.MVC.DTOs;
 using SimpleUser.MVC.Services;
@@ -11,13 +13,7 @@ using System.Runtime.Intrinsics.X86;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthorization(options => options.AddPolicy("EmployeeOnly", policy => policy.RequireClaim("EmployeeNumber")));
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("RequireAdmin", policy => policy.RequireRole("Administrator"));
-    options.AddPolicy("RequireManager", policy => policy.RequireRole("Manager"));
-});
+AddAuthorizationPolicies();
 
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
 
@@ -30,14 +26,12 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services
-.AddHttpClient();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddHttpClient();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IValidator<UserCreateDto>, UserCreateValidator>();
-builder.Services.AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>();
-builder.Services.AddScoped<IValidator<LoginDto>, LoginValidator>();
 builder.Services.AddFluentValidationAutoValidation();
+
+AddScoped();
+AddSingleton();
 
 var app = builder.Build();
 
@@ -58,7 +52,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();;
+app.UseAuthentication(); ;
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -67,4 +61,34 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-app.Run();                                                                                                                                                                                                                                                                                                                                                                 
+app.Run();
+
+void AddAuthorizationPolicies()
+{
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("SuperAdmin", policy => policy.RequireClaim("Admin", "Admin"));
+        options.AddPolicy("RequireAdmin", policy => policy.RequireRole("Administrator"));
+        options.AddPolicy("RequireManager", policy => policy.RequireRole("Manager"));
+        options.AddPolicy("CanDeleteUser",
+        policyBuilder =>
+            policyBuilder.AddRequirements(
+                new IsAllowedToDeleteUserRequirement(),
+                new IsAccountSuperAdminRequirement()
+            ));
+    });
+}
+
+void AddScoped()
+{
+    builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<IValidator<UserCreateDto>, UserCreateValidator>();
+    builder.Services.AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>();
+    builder.Services.AddScoped<IValidator<LoginDto>, LoginValidator>();
+}
+
+void AddSingleton()
+{
+    builder.Services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
+    builder.Services.AddSingleton<IAuthorizationHandler, IsSuperHandler>();
+}

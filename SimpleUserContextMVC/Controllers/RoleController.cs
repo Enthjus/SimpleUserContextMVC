@@ -1,25 +1,31 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
+using SimpleUser.MVC.Core;
 
 namespace SimpleUser.MVC.Controllers
 {
     public class RoleController : Controller
     {
-        [Authorize(Policy = "EmployeeOnly")]
         public IActionResult Index()
         {
             return View();
         }
 
-        [Authorize(Policy = "RequireManager")]
+        [Authorize(Roles = $"{Constants.Roles.Administrator},{Constants.Roles.Manager}")]
         public IActionResult Manager()
         {
             return View();
         }
 
-        [Authorize(Policy = "RequireAdmin")]
+        //[Authorize(Policy = "RequireAdmin")]
+        [Authorize(Policy = Constants.Policies.RequireAdmin)]
         public IActionResult Admin()
+        {
+            return View();
+        }
+
+        [Authorize(Policy = Constants.Policies.SuperAdmin)]
+        public IActionResult SuperAdmin()
         {
             return View();
         }
