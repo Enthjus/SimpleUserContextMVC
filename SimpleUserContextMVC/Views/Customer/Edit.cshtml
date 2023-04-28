@@ -1,0 +1,77 @@
+﻿@model SimpleUser.MVC.DTOs.CustomerUpdateDto
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Username" class="control-label"></label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OldPassword" class="control-label"></label>
+                <input asp-for="OldPassword" type="password" class="form-control" />
+                <span asp-validation-for="OldPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewPassword" class="control-label"></label>
+                <input asp-for="NewPassword" type="password" class="form-control" />
+                <span asp-validation-for="NewPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmNewPassword" class="control-label"></label>
+                <input asp-for="ConfirmNewPassword" type="password" class="form-control" />
+                <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerDetailDto.FirstName" class="control-label"></label>
+                <input asp-for="CustomerDetailDto.FirstName" class="form-control" />
+                <span asp-validation-for="CustomerDetailDto.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerDetailDto.LastName" class="control-label"></label>
+                <input asp-for="CustomerDetailDto.LastName" class="form-control" />
+                <span asp-validation-for="CustomerDetailDto.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerDetailDto.PhoneNumber" class="control-label"></label>
+                <input asp-for="CustomerDetailDto.PhoneNumber" class="form-control" />
+                <span asp-validation-for="CustomerDetailDto.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerDetailDto.Address" class="control-label"></label>
+                <input asp-for="CustomerDetailDto.Address" class="form-control" />
+                <span asp-validation-for="CustomerDetailDto.Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Edit" class="btn btn-primary" />
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        Html.RenderPartial("_ValidationScriptsPartial");
+    }
+}

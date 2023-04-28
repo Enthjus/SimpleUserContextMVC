@@ -1,48 +1,23 @@
 ﻿using AutoMapper;
-using SimpleUser.Domain.Entities;
 using SimpleUser.API.DTOs;
+using SimpleUser.Persistence.Data;
 
 namespace SimpleUser.API.Profiles
 {
     public class UserProfile : Profile
     {
-        public UserProfile() 
+        public UserProfile()
         {
-            CreateMap<UserDto, User>()
+            CreateMap<SignUpDto, ApplicationUser>()
                 .ForMember(
-                    dest => dest.UserDetail,
-                    opt => opt.MapFrom(src => src.UserDetailDto)
+                    dest => dest.UserName,
+                    otp => otp.MapFrom(src => src.Email)
                 );
-            CreateMap<User, UserDto>()
+            CreateMap<ApplicationUser, SignUpDto>()
                 .ForMember(
-                    dest => dest.UserDetailDto,
-                    opt => opt.MapFrom(src => src.UserDetail)
+                    dest => dest.Email,
+                    otp => otp.MapFrom(src => src.UserName)
                 );
-            CreateMap<UserCreateDto, User>()
-               .ForMember(
-                   dest => dest.UserDetail,
-                   opt => opt.MapFrom(src => src.UserDetailDto)
-               );
-            CreateMap<User, UserCreateDto>()
-                .ForMember(
-                    dest => dest.UserDetailDto,
-                    opt => opt.MapFrom(src => src.UserDetail)
-                );
-            CreateMap<UserUpdateDto, User>()
-               .ForMember(
-                   dest => dest.UserDetail,
-                   opt => opt.MapFrom(src => src.UserDetailDto)
-               ).ForMember(
-                   dest => dest.Password,
-                   opt => opt.MapFrom(src => src.NewPassword)
-               );
-            CreateMap<User, UserUpdateDto>()
-                .ForMember(
-                    dest => dest.UserDetailDto,
-                    opt => opt.MapFrom(src => src.UserDetail)
-                );
-            CreateMap<UserDetailDto, UserDetail>();
-            CreateMap<UserDetail, UserDetailDto>();
         }
     }
 }

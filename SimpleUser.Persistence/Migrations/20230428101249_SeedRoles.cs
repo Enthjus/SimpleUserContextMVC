@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace SimpleUser.MVC.Migrations
+namespace SimpleUser.Persistence.Migrations
 {
     public partial class SeedRoles : Migration
     {
@@ -39,7 +39,7 @@ namespace SimpleUser.MVC.Migrations
 VALUES 
 (N'{User1Id}', N'Test 2', N'Lastname', N'test2@test.ca', N'TEST2@TEST.CA', 
 N'test2@test.ca', N'TEST2@TEST.CA', 0, 
-N'AQAAAAEAACcQAAAAEJrSVAlephPwJlefxNs0/G0E2scxN8t7MAMQZze14yYB1NlddPIK3BkBAx9Zf1Kgsw==', 
+N'AQAAAAEAACcQAAAAEDGQ5wwj6Iz0lXHIZ5IwuvgSO88jrSBT1etWcDYjJN5CBNDKvddZcEeixYBYmcdFag==', 
 N'YUPAFWNGZI2UC5FOITC7PX5J7XZTAZAA', N'8e150555-a20d-4610-93ff-49c5af44f749', NULL, 0, 0, NULL, 1, 0)");
 
             migrationBuilder.Sql(
@@ -49,7 +49,7 @@ N'YUPAFWNGZI2UC5FOITC7PX5J7XZTAZAA', N'8e150555-a20d-4610-93ff-49c5af44f749', NU
 VALUES 
 (N'{User2Id}', N'Test 3', N'Lastname', N'test3@test.ca', N'TEST3@TEST.CA', 
 N'test3@test.ca', N'TEST3@TEST.CA', 0, 
-N'AQAAAAEAACcQAAAAEJrSVAlephPwJlefxNs0/G0E2scxN8t7MAMQZze14yYB1NlddPIK3BkBAx9Zf1Kgsw==', 
+N'AQAAAAEAACcQAAAAEDGQ5wwj6Iz0lXHIZ5IwuvgSO88jrSBT1etWcDYjJN5CBNDKvddZcEeixYBYmcdFag==', 
 N'YUPAFWNGZI2UC5FOITC7PX5J7XZTAZAA', N'8e150555-a20d-4610-93ff-49c5af44f749', NULL, 0, 0, NULL, 1, 0)");
         }
 

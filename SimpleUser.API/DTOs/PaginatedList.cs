@@ -6,14 +6,14 @@ namespace SimpleUser.API.DTOs
     {
         public int PageIndex { get; private set; }
         public int TotalPages { get; private set; }
-        public List<T> Users {  get; private set; }
+        public List<T> Customers {  get; private set; }
 
         public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-            Users = new List<T>();
-            Users.AddRange(items);
+            Customers = new List<T>();
+            Customers.AddRange(items);
         }
 
         public bool HasPreviousPage => PageIndex > 1;

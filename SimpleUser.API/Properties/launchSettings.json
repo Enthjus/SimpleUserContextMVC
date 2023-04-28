@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "SimpleUser.API": {
+    "SimpleCustomer.API": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

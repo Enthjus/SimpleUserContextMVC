@@ -1,0 +1,81 @@
+﻿@model SimpleUser.MVC.ViewModels.CustomerVM
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Users.Users[0].Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users.Users[0].Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users.Users[0].CustomerDetailDto.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users.Users[0].CustomerDetailDto.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users.Users[0].CustomerDetailDto.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users.Users[0].CustomerDetailDto.Address)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Users.Users)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerDetailDto.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerDetailDto.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerDetailDto.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerDetailDto.Address)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.Users.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Users.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-PageIndex="@(Model.Index.PageIndex - 1)"
+   asp-route-Filter="@Model.Index.Filter"
+   asp-route-PageSize="@Model.Index.PageSize"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+@for (int i = 1; i <= Model.Users.TotalPages; i++)
+{
+    <a asp-action="Index" asp-route-PageIndex="@i" asp-route-Filter="@Model.Index.Filter" asp-route-PageSize="@Model.Index.PageSize">@i</a>
+}
+<a asp-action="Index"
+   asp-route-PageIndex="@(Model.Index.PageIndex + 1)"
+   asp-route-Filter="@Model.Index.Filter"
+   asp-route-PageSize="@Model.Index.PageSize"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

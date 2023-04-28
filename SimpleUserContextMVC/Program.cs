@@ -81,9 +81,9 @@ void AddAuthorizationPolicies()
 
 void AddScoped()
 {
-    builder.Services.AddScoped<IUserService, UserService>();
-    builder.Services.AddScoped<IValidator<UserCreateDto>, UserCreateValidator>();
-    builder.Services.AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>();
+    builder.Services.AddScoped<ICustomerService, CustomerService>();
+    builder.Services.AddScoped<IValidator<CustomerCreateDto>, CustomerCreateValidator>();
+    builder.Services.AddScoped<IValidator<CustomerUpdateDto>, CustomerUpdateValidator>();
     builder.Services.AddScoped<IValidator<LoginDto>, LoginValidator>();
 }
 

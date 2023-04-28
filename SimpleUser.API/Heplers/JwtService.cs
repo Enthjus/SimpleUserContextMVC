@@ -1,6 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using SimpleUser.API.Auths;
-using SimpleUser.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -17,24 +16,23 @@ namespace SimpleUser.API.Heplers
             _configuration = configuration;
         }
 
-        public JwtSecurityToken Generate(int id)
+        public JwtSecurityToken Generate(string username)
         {
             var claims = new[]
             {
                 new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                 new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                new Claim("Id", id.ToString())
+                new Claim("Username", username)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            int.TryParse(_configuration["Jwt:TokenValidityInMinutes"], out int tokenValidityInMinutes);
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(tokenValidityInMinutes),
+                expires: DateTime.UtcNow.AddMinutes(_configuration.GetValue<int>("Jwt:TokenValidityInMinutes")),
                 signingCredentials: signIn);
             return token;
         }

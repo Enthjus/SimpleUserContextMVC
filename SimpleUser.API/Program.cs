@@ -1,20 +1,26 @@
+#region Using
+using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using SimpleUser.API.DTOs;
 using SimpleUser.API.Heplers;
 using SimpleUser.API.Services;
+using SimpleUser.API.Validators;
 using SimpleUser.Persistence.Data;
 using System.Text;
+#endregion
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-//builder.Services.AddCors();
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -48,14 +54,17 @@ builder.Services.AddSwaggerGen(c =>
          }
     });
 });
-builder.Services.AddDbContext<ApplicationContext>(options =>
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
+
+AddScoped();
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddFluentValidationAutoValidation();
-//builder.Services.AddScoped<IValidator<UserCreateDto>, UserCreateValidator>();
-//builder.Services.AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>();
 builder.Services.AddApiVersioning(opt =>
 {
     opt.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
@@ -65,7 +74,14 @@ builder.Services.AddApiVersioning(opt =>
                                                     new HeaderApiVersionReader("x-api-version"),
                                                     new MediaTypeApiVersionReader("x-api-version"));
 });
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+
+#region Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
 {
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
@@ -78,6 +94,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
+#endregion
+
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration)
+);
 
 var app = builder.Build();
 
@@ -92,24 +113,28 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    var context = services.GetRequiredService<ApplicationContext>();
+    var context = services.GetRequiredService<ApplicationDbContext>();
     //context.Database.EnsureCreated();
     DbInitializer.Initialize(context);
 }
 
-app.UseHttpsRedirection();
+app.UseProblemDetails();
+app.UseSerilogRequestLogging();
 
-//app.UseCors(options => options
-//    .WithOrigins("https://localhost:7037")
-//    .AllowAnyHeader()
-//    .AllowAnyMethod()
-//    .AllowCredentials()
-//);
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-
 app.MapControllers();
 
 app.Run();
+
+void AddScoped()
+{
+    builder.Services.AddScoped<ICustomerService, CustomerService>();
+    builder.Services.AddScoped<IJwtService, JwtService>();
+    builder.Services.AddScoped<IValidator<CustomerCreateDto>, CustomerCreateValidator>();
+    builder.Services.AddScoped<IValidator<CustomerUpdateDto>, CustomerUpdateValidator>();
+    builder.Services.AddScoped<IAccountService, AccountService>();
+}

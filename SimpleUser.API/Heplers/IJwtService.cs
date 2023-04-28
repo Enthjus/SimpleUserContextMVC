@@ -6,7 +6,7 @@ namespace SimpleUser.API.Heplers
 {
     public interface IJwtService
     {
-        JwtSecurityToken Generate(int id);
+        JwtSecurityToken Generate(string username);
         RefreshToken GenerateRefreshToken();
         ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token);
     }
