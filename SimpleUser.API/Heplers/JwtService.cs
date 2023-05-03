@@ -1,5 +1,7 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using SimpleUser.API.Auths;
+using SimpleUser.Persistence.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -10,21 +12,31 @@ namespace SimpleUser.API.Heplers
     public class JwtService : IJwtService
     {
         public IConfiguration _configuration;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public JwtService(IConfiguration configuration)
+        public JwtService(IConfiguration configuration, SignInManager<ApplicationUser> signInManager)
         {
             _configuration = configuration;
+            _signInManager = signInManager;
         }
 
-        public JwtSecurityToken Generate(string username)
+        public async Task<JwtSecurityToken> GenerateAsync(ApplicationUser user)
         {
-            var claims = new[]
+            var roles = await _signInManager.UserManager.GetRolesAsync(user);
+            var claims = new List<Claim>();
             {
-                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                new Claim("Username", username)
+                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]);
+                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
+                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString());
+                new Claim("Email", user.Email);
             };
+            if (roles.Any())
+            {
+                foreach (var role in roles)
+                {
+                    claims.Add(new Claim("Role", role));
+                }
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
