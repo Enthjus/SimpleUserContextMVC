@@ -8,16 +8,8 @@ namespace SimpleCustomer.API.Profiles
     {
         public CustomerProfile() 
         {
-            CreateMap<CustomerDto, Customer>()
-                .ForMember(
-                    dest => dest.CustomerDetail,
-                    opt => opt.MapFrom(src => src.CustomerDetailDto)
-                );
-            CreateMap<Customer, CustomerDto>()
-                .ForMember(
-                    dest => dest.CustomerDetailDto,
-                    opt => opt.MapFrom(src => src.CustomerDetail)
-                );
+            CreateMap<CustomerDto, Customer>();
+            CreateMap<Customer, CustomerDto>();
             CreateMap<CustomerCreateDto, Customer>()
                .ForMember(
                    dest => dest.CustomerDetail,

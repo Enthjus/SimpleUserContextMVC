@@ -1,7 +1,6 @@
-﻿using SimpleUser.MVC.Areas.Identity.Data;
-using SimpleUser.MVC.Auths;
+﻿using SimpleUser.MVC.Auths;
 using SimpleUser.MVC.DTOs;
-using SimpleUser.MVC.ViewModels;
+using SimpleUser.MVC.Models;
 
 namespace SimpleUser.MVC.Services
 {
@@ -14,8 +13,7 @@ namespace SimpleUser.MVC.Services
         Task<ValidationErrorDto> UpdateAsync(CustomerUpdateDto userUpdateDto);
         Task DeleteAsync(int id);
         bool IsNullOrZero(int? num);
-        Task<JwtToken> LoginAsync(LoginDto loginDto);
-        Task<PaginatedList<CustomerDto>> FindAllAsync(IndexVM indexVM);
+        Task<PaginatedList<CustomerDto>> FindAllAsync(IndexViewModel indexVM);
         #endregion
     }
 }

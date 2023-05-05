@@ -62,6 +62,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
 
 AddScoped();
+AddAuthorizationPolicies();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddFluentValidationAutoValidation();
@@ -136,5 +137,16 @@ void AddScoped()
     builder.Services.AddScoped<IJwtService, JwtService>();
     builder.Services.AddScoped<IValidator<CustomerCreateDto>, CustomerCreateValidator>();
     builder.Services.AddScoped<IValidator<CustomerUpdateDto>, CustomerUpdateValidator>();
+    builder.Services.AddScoped<IValidator<UserProfileDto>, UserProfileValidator>();
     builder.Services.AddScoped<IAccountService, AccountService>();
+}
+
+void AddAuthorizationPolicies()
+{
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("RequireAdministrator", policy => policy.RequireClaim("Role", "Administrator"));
+        options.AddPolicy("RequireManager", policy => policy.RequireClaim("Role", "Manager"));
+        options.AddPolicy("RequireUser", policy => policy.RequireClaim("Role", "User"));
+    });
 }

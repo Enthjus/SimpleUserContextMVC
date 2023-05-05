@@ -9,10 +9,10 @@ namespace SimpleUser.API.Validators
         {
             RuleFor(x => x.FirstName)
               .NotNull()
-              .WithMessage("Email cannot be empty");
+              .WithMessage("FirstName cannot be empty");
             RuleFor(x => x.LastName)
               .NotNull()
-              .WithMessage("Email cannot be empty");
+              .WithMessage("LastName cannot be empty");
             RuleFor(x => x.Email)
               .NotNull()
               .WithMessage("Email cannot be empty")
@@ -20,7 +20,7 @@ namespace SimpleUser.API.Validators
               .WithMessage("Please enter a valid email address");
             RuleFor(x => x.Password)
               .NotNull()
-              .WithMessage("Email cannot be empty");
+              .WithMessage("Password cannot be empty");
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace SimpleUser.MVC.ViewModels
+﻿namespace SimpleUser.MVC.Models
 {
-    public class IndexVM
+    public class IndexViewModel
     {
         public int PageSize { get; set; }
         public int PageIndex { get; set; }

@@ -23,11 +23,16 @@ namespace SimpleUser.API.Services
             _mapper = mapper;
         }
 
+        public async Task<IdentityResult> ChangePassword(string email, ChangePasswordDto changePassword)
+        {
+            var user = await FindByEmailAsync(email);
+            return await _userManager.ChangePasswordAsync(user, changePassword.CurrentPassword, changePassword.NewPassword);
+        }
+
         public async Task<JwtToken> SignInAsync(SignInDto signInDto)
         {
-            var result = await _signInManager.PasswordSignInAsync(signInDto.Email, signInDto.Password, false, false);
-            var user = await _signInManager.UserManager.FindByNameAsync(signInDto.Email);
-
+            var user = await FindByEmailAsync(signInDto.Email);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, signInDto.Password, false);
             if (!result.Succeeded)
             {
                 return null;
@@ -51,6 +56,19 @@ namespace SimpleUser.API.Services
             var user = _mapper.Map<ApplicationUser>(signUp);
 
             return await _userManager.CreateAsync(user, signUp.Password);
+        }
+
+        public async Task<IdentityResult> UpdateUserProfile(string email, UserProfileDto userProfile)
+        {
+            var oldUser = await FindByEmailAsync(email);
+            _mapper.Map(userProfile, oldUser);
+            return await _userManager.UpdateAsync(oldUser);
+        }
+
+        private async Task<ApplicationUser> FindByEmailAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user;
         }
     }
 }

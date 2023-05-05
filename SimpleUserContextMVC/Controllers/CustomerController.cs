@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleUser.MVC.Core;
 using SimpleUser.MVC.DTOs;
+using SimpleUser.MVC.Models;
 using SimpleUser.MVC.Services;
 using SimpleUser.MVC.Validators;
-using SimpleUser.MVC.ViewModels;
 using static SimpleUser.MVC.Core.Constants;
 
 namespace SimpleUser.MVC.Controllers
@@ -24,7 +24,7 @@ namespace SimpleUser.MVC.Controllers
             _validatorUpdate = validatorUpdate;
         }
 
-        public IActionResult Index(IndexVM indexVM)
+        public IActionResult Index(IndexViewModel indexVM)
         {
             if (string.IsNullOrEmpty(indexVM.Filter))
             {

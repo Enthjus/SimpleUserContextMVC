@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SimpleUser.API.DTOs;
 using SimpleUser.API.Services;
@@ -22,6 +21,7 @@ namespace SimpleUser.API.Controllers.v1
             _logger = logger;
         }
 
+        [Authorize(Policy = "RequireUser")]
         [HttpGet]
         public async Task<ActionResult<PaginatedList<CustomerDto>>> Index([FromQuery] PageInfoDto pageInfo)
         {
@@ -35,6 +35,7 @@ namespace SimpleUser.API.Controllers.v1
             return Customers;
         }
 
+        [Authorize(Policy = "RequireUser")]
         [HttpGet("{id}")]
         public async Task<ActionResult<CustomerDto>> Details(int id)
         {
@@ -49,6 +50,7 @@ namespace SimpleUser.API.Controllers.v1
             return CustomerDto;
         }
 
+        [Authorize(Policy = "RequireManager")]
         [HttpPost]
         public async Task<IActionResult> Create(CustomerCreateDto CustomerCreateDto)
         {
@@ -61,6 +63,7 @@ namespace SimpleUser.API.Controllers.v1
             return Ok(await _CustomerService.InsertAsync(CustomerCreateDto));
         }
 
+        [Authorize(Policy = "RequireManager")]
         [HttpPut]
         public async Task<ActionResult<int>> Edit(CustomerUpdateDto CustomerUpdateDto)
         {
@@ -73,6 +76,7 @@ namespace SimpleUser.API.Controllers.v1
             return Ok(await _CustomerService.UpdateAsync(CustomerUpdateDto));
         }
 
+        [Authorize(Policy = "RequireAdministrator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

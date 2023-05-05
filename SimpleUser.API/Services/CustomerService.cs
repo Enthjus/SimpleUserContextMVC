@@ -77,16 +77,14 @@ namespace SimpleUser.API.Services
 
         public async Task<PaginatedList<CustomerDto>> FindAllByPageAsync(int pageSize, int pageIndex, string filter)
         {
-            IQueryable<Customer> Customers = from u in _context.Customers.Include(x => x.CustomerDetail)
+            IQueryable<Customer> Customers = from u in _context.Customers
                                              select u;
             IQueryable<CustomerDto> CustomerDtos = _mapper.ProjectTo<CustomerDto>(Customers);
             PaginatedList<CustomerDto> pageList;
             if (!string.IsNullOrEmpty(filter))
             {
                 CustomerDtos = CustomerDtos
-                    .Where(u => u.CustomerDetailDto.LastName.ToUpper().Contains(filter.ToUpper()) ||
-                    u.CustomerDetailDto.FirstName.ToUpper().Contains(filter.ToUpper()) ||
-                    u.CustomerDetailDto.PhoneNumber.Contains(filter) ||
+                    .Where(u => u.Customername.ToUpper().Contains(filter.ToUpper()) ||
                     u.Email.ToUpper().Contains(filter.ToUpper()));
             }
             if(IsZeroOrNull(pageSize))

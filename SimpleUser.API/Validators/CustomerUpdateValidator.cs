@@ -7,10 +7,10 @@ namespace SimpleUser.API.Validators
 {
     public class CustomerUpdateValidator : AbstractValidator<CustomerUpdateDto>
     {
-        private readonly ICustomerService _CustomerService;
-        public CustomerUpdateValidator(ICustomerService CustomerService)
+        private readonly ICustomerService _customerService;
+        public CustomerUpdateValidator(ICustomerService customerService)
         {
-            _CustomerService = CustomerService;
+            _customerService = customerService;
             RuleFor(x => x.Id)
                 .NotNull();
             RuleFor(x => x.Customername)
@@ -26,7 +26,7 @@ namespace SimpleUser.API.Validators
             RuleFor(x => x.CustomerDetailDto).SetValidator(new CustomerDetailValidator());
             RuleFor(x => x).Custom((x, context) =>
             {
-                if (_CustomerService.IsCustomerAlreadyExistsByEmail(x.Email, x.Id))
+                if (_customerService.IsCustomerAlreadyExistsByEmail(x.Email, x.Id))
                 {
                     context.AddFailure(nameof(x.Email), "Email already exist");
                 }
@@ -35,7 +35,7 @@ namespace SimpleUser.API.Validators
             {
                 if (!string.IsNullOrEmpty(x.OldPassword))
                 {
-                    var Customer = CustomerService.FindById(x.Id);
+                    var Customer = _customerService.FindById(x.Id);
                     if (!BCrypt.Net.BCrypt.Verify(x.OldPassword, Customer.Password))
                     {
                         context.AddFailure(nameof(x.OldPassword), "Old password is not match");

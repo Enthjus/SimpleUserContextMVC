@@ -18,6 +18,8 @@ namespace SimpleUser.API.Profiles
                     dest => dest.Email,
                     otp => otp.MapFrom(src => src.UserName)
                 );
+            CreateMap<UserProfileDto, ApplicationUser>();
+            CreateMap<ApplicationUser, UserProfileDto>();
         }
     }
 }

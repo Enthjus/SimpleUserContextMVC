@@ -1,28 +1,32 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SimpleUser.MVC.Areas.Identity.Data;
 using SimpleUser.MVC.Authorization;
-using SimpleUser.MVC.Data;
 using SimpleUser.MVC.DTOs;
 using SimpleUser.MVC.Services;
 using SimpleUser.MVC.Validators;
-using System.Runtime.Intrinsics.X86;
+using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 AddAuthorizationPolicies();
+builder.Services.AddDbContext<IdentityDbContext>();
 
-var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+{
+    options.User.RequireUniqueEmail = false;
+}).AddEntityFrameworkStores<IdentityDbContext>();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Cookie settings
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -52,14 +56,23 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.Use(async (context, next) =>
+{
+    var JWToken = context.Request.Cookies["JWToken"];
+    if (!string.IsNullOrEmpty(JWToken))
+    {
+        context.Request.Headers.Add("Authorization", "Bearer " + JWToken);
+    }
+    await next();
+});
+
 app.UseAuthentication(); ;
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.MapRazorPages();
+    pattern: "{controller=Login}/{action=Login}/{id?}");
 
 app.Run();
 
@@ -82,6 +95,7 @@ void AddAuthorizationPolicies()
 void AddScoped()
 {
     builder.Services.AddScoped<ICustomerService, CustomerService>();
+    builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<IValidator<CustomerCreateDto>, CustomerCreateValidator>();
     builder.Services.AddScoped<IValidator<CustomerUpdateDto>, CustomerUpdateValidator>();
     builder.Services.AddScoped<IValidator<LoginDto>, LoginValidator>();

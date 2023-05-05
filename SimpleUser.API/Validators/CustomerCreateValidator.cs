@@ -7,10 +7,10 @@ namespace SimpleUser.API.Validators
 {
     public class CustomerCreateValidator : AbstractValidator<CustomerCreateDto>
     {
-        private readonly ICustomerService _CustomerService;
-        public CustomerCreateValidator(ICustomerService CustomerService) 
+        private readonly ICustomerService _customerService;
+        public CustomerCreateValidator(ICustomerService customerService) 
         { 
-            _CustomerService = CustomerService;
+            _customerService = customerService;
             RuleFor(x => x.Customername)
                .NotNull()
                .WithMessage("Username cannot be empty")
@@ -29,7 +29,7 @@ namespace SimpleUser.API.Validators
             RuleFor(x => x.CustomerDetailDto).SetValidator(new CustomerDetailValidator());
             RuleFor(x => x).Custom((x, context) =>
             {
-                if (_CustomerService.IsCustomerAlreadyExistsByEmail(x.Email))
+                if (_customerService.IsCustomerAlreadyExistsByEmail(x.Email))
                 {
                     context.AddFailure(nameof(x.Email), "Email already exist");
                 }

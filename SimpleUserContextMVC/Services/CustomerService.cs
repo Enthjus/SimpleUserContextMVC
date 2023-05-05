@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using SimpleUser.MVC.Auths;
 using SimpleUser.MVC.DTOs;
-using SimpleUser.MVC.ViewModels;
+using SimpleUser.MVC.Models;
 using System.Net.Http.Headers;
 
 namespace SimpleUser.MVC.Services
@@ -12,7 +12,6 @@ namespace SimpleUser.MVC.Services
         #region CallApi
         private readonly IMapper _mapper;
         private HttpClient _httpClient;
-        string token;
 
         public CustomerService(HttpClient httpClient, IMapper mapper)
         {
@@ -30,7 +29,7 @@ namespace SimpleUser.MVC.Services
 
         public async Task<CustomerDto> FindUserDtoByIdAsync(int id)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync($"api/v1/Users/{id}");
+            HttpResponseMessage response = await _httpClient.GetAsync($"api/v1/Customers/{id}");
             CustomerDto userDto = null;
             if (response.IsSuccessStatusCode)
             {
@@ -41,7 +40,7 @@ namespace SimpleUser.MVC.Services
 
         public async Task<ValidationErrorDto> InsertAsync(CustomerCreateDto userCreateDto)
         {
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/v1/Users", userCreateDto);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/v1/Customers", userCreateDto);
             var result = await httpResponseMessage.Content.ReadAsStringAsync();
             ValidationErrorDto errorDto = new ValidationErrorDto();
             if (httpResponseMessage.IsSuccessStatusCode)
@@ -55,7 +54,7 @@ namespace SimpleUser.MVC.Services
 
         public async Task<ValidationErrorDto> UpdateAsync(CustomerUpdateDto userUpdateDto)
         {
-            var httpResponseMessage = await _httpClient.PutAsJsonAsync("api/v1/Users", userUpdateDto);
+            var httpResponseMessage = await _httpClient.PutAsJsonAsync("api/v1/Customers", userUpdateDto);
             var result = await httpResponseMessage.Content.ReadAsStringAsync();
             ValidationErrorDto errorDto = new ValidationErrorDto();
             if (httpResponseMessage.IsSuccessStatusCode)
@@ -79,21 +78,10 @@ namespace SimpleUser.MVC.Services
             return num == 0 || num == null;
         }
 
-        public async Task<JwtToken> LoginAsync(LoginDto loginDto)
-        {
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/v1/Auth/login", loginDto);
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                var result = await httpResponseMessage.Content.ReadFromJsonAsync<JwtToken>();
-                return result;
-            }
-            return null;
-        }
-
-        public async Task<PaginatedList<CustomerDto>> FindAllAsync(IndexVM indexVM)
+        public async Task<PaginatedList<CustomerDto>> FindAllAsync(IndexViewModel indexVM)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(
-                    $"api/v1/Users?PageSize={indexVM.PageSize}&PageIndex={indexVM.PageIndex}&Filter={indexVM.Filter}");
+                    $"api/v1/Customers?PageSize={indexVM.PageSize}&PageIndex={indexVM.PageIndex}&Filter={indexVM.Filter}");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<PaginatedList<CustomerDto>>();

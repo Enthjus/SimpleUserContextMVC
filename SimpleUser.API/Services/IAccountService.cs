@@ -6,7 +6,9 @@ namespace SimpleUser.API.Services
 {
     public interface IAccountService
     {
-        public Task<IdentityResult> SignUpAsync(SignUpDto signUp);
-        public Task<JwtToken> SignInAsync(SignInDto signIn);
+        Task<IdentityResult> SignUpAsync(SignUpDto signUp);
+        Task<JwtToken> SignInAsync(SignInDto signIn);
+        Task<IdentityResult> UpdateUserProfile(string email, UserProfileDto userProfile);
+        Task<IdentityResult> ChangePassword(string email, ChangePasswordDto changePassword);
     }
 }

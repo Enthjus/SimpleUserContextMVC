@@ -12,23 +12,24 @@ namespace SimpleUser.API.Heplers
     public class JwtService : IJwtService
     {
         public IConfiguration _configuration;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public JwtService(IConfiguration configuration, SignInManager<ApplicationUser> signInManager)
+        public JwtService(IConfiguration configuration, UserManager<ApplicationUser> userManager)
         {
             _configuration = configuration;
-            _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         public async Task<JwtSecurityToken> GenerateAsync(ApplicationUser user)
         {
-            var roles = await _signInManager.UserManager.GetRolesAsync(user);
-            var claims = new List<Claim>();
+            var roles = await _userManager.GetRolesAsync(user);
+            var claims = new List<Claim>()
             {
-                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]);
-                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
-                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString());
-                new Claim("Email", user.Email);
+                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                new Claim("Email", user.Email),
+                new Claim("Id", user.Id)
             };
             if (roles.Any())
             {

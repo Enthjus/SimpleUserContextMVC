@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SimpleUser.MVC.DTOs;
+using SimpleUser.MVC.Models;
 using SimpleUser.MVC.Services;
-using SimpleUser.MVC.ViewModels;
 
 namespace SimpleUser.MVC.ViewComponents
 {
@@ -15,11 +15,11 @@ namespace SimpleUser.MVC.ViewComponents
         }
         private int pageSize = 3;
 
-        public async Task<IViewComponentResult> InvokeAsync(IndexVM indexVM)
+        public async Task<IViewComponentResult> InvokeAsync(IndexViewModel indexVM)
         {
             PaginatedList<CustomerDto> pageList = await _userService.FindAllAsync(indexVM);
-            CustomerVM userVM = new CustomerVM();
-            userVM.Users = pageList;
+            CustomerViewModel userVM = new CustomerViewModel();
+            userVM.Customers = pageList;
             userVM.Index = indexVM;
             return View(userVM);
         }

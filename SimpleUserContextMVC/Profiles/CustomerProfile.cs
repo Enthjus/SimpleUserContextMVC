@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SimpleUser.MVC.DTOs;
+using SimpleUser.MVC.Models;
 
 namespace SimpleUser.MVC.Profiles
 {
@@ -9,6 +10,8 @@ namespace SimpleUser.MVC.Profiles
         {
             CreateMap<CustomerUpdateDto, CustomerDto>();
             CreateMap<CustomerDto, CustomerUpdateDto>();
+            CreateMap<LoginDto, LoginViewModel>();
+            CreateMap<LoginViewModel, LoginDto>();
         }
     }
 }

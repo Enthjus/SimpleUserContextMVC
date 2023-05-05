@@ -6,7 +6,7 @@ namespace SimpleUser.MVC.DTOs
     {
         public int PageIndex { get; set; }
         public int TotalPages { get; set; }
-        public List<T> Users { get; set; }
+        public List<T> Customers { get; set; }
         public bool HasPreviousPage { get; set; }
         public bool HasNextPage { get; set; }
     }

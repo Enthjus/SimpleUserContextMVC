@@ -1,5 +1,6 @@
-﻿@using SimpleUser.MVC.ViewModels;
-@model SimpleUser.MVC.ViewModels.IndexVM
+﻿@using SimpleUser.MVC.Models;
+
+@model IndexViewModel
 @{
     ViewData["Title"] = "Users";
 }
@@ -29,5 +30,5 @@
     </p>
 </form>
 <div>
-    @await Component.InvokeAsync("User", new IndexVM { Filter = Model.Filter, PageIndex = Model.PageIndex, PageSize = Model.PageSize })
+    @await Component.InvokeAsync("Customer", new IndexViewModel { Filter = Model.Filter, PageIndex = Model.PageIndex, PageSize = Model.PageSize })
 </div>
