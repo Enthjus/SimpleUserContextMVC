@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using SimpleUser.MVC.DTOs;
 using SimpleUser.MVC.Models;
 using SimpleUser.MVC.Services;

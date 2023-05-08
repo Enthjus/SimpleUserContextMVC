@@ -30,11 +30,11 @@ namespace SimpleUser.API.Services
             return Customer;
         }
 
-        public async Task<CustomerDto> FindCustomerDtoByIdAsync(int id)
+        public async Task<CustomerInfoDto> FindCustomerDtoByIdAsync(int id)
         {
-            Customer Customer = await FindByIdAsync(id);
-            CustomerDto CustomerDto = _mapper.Map<CustomerDto>(Customer);
-            return CustomerDto;
+            Customer customer = await FindByIdAsync(id);
+            CustomerInfoDto customerInfoDto = _mapper.Map<CustomerInfoDto>(customer);
+            return customerInfoDto;
         }
 
         public async Task<int> InsertAsync(CustomerCreateDto CustomerCreateDto)

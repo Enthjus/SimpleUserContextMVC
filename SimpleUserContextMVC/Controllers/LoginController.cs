@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Owin.Security;
 using SimpleUser.MVC.Models;
 using SimpleUser.MVC.Services;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace SimpleUser.MVC.Controllers
 {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Newtonsoft.Json;
+using Refit;
 using SimpleUser.MVC.Auths;
 using SimpleUser.MVC.DTOs;
 using SimpleUser.MVC.Models;
@@ -12,14 +13,20 @@ namespace SimpleUser.MVC.Services
         #region CallApi
         private readonly IMapper _mapper;
         private HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
+        //private HttpContext _httpContext;
+        private readonly ICustomerApi _customerApi;
 
-        public CustomerService(HttpClient httpClient, IMapper mapper)
+        public CustomerService(HttpClient httpClient, IMapper mapper, IHttpClientFactory httpClientFactory, ICustomerApi customerApi)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:7037/");
-            _httpClient.DefaultRequestHeaders.Accept.Clear();
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            //_httpClient.BaseAddress = new Uri("https://localhost:7037/");
+            //_httpClient.DefaultRequestHeaders.Accept.Clear();
+            //_httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            //var hd = _httpContext.Request.Headers.Authorization;
             _mapper = mapper;
+            _httpClientFactory = httpClientFactory;
+            _customerApi = customerApi;
         }
 
         public async Task DeleteAsync(int id)
@@ -29,7 +36,8 @@ namespace SimpleUser.MVC.Services
 
         public async Task<CustomerDto> FindUserDtoByIdAsync(int id)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync($"api/v1/Customers/{id}");
+            HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Customers/{id}");
+            HttpResponseMessage response = await _httpClient.SendAsync(httpRequest);
             CustomerDto userDto = null;
             if (response.IsSuccessStatusCode)
             {
@@ -80,13 +88,8 @@ namespace SimpleUser.MVC.Services
 
         public async Task<PaginatedList<CustomerDto>> FindAllAsync(IndexViewModel indexVM)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(
-                    $"api/v1/Customers?PageSize={indexVM.PageSize}&PageIndex={indexVM.PageIndex}&Filter={indexVM.Filter}");
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadFromJsonAsync<PaginatedList<CustomerDto>>();
-            }
-            return null;
+            //HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Customers?PageSize={indexVM.PageSize}&PageIndex={indexVM.PageIndex}&Filter={indexVM.Filter}");
+            return await _customerApi.FindAllAsync(indexVM);
         }
         #endregion
     }

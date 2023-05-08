@@ -23,11 +23,5 @@ namespace SimpleUser.MVC.Controllers
         {
             return View();
         }
-
-        [Authorize(Policy = Constants.Policies.SuperAdmin)]
-        public IActionResult SuperAdmin()
-        {
-            return View();
-        }
     }
 }

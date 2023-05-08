@@ -7,7 +7,7 @@ namespace SimpleUser.API.Services
     {
         Task<Customer> FindByIdAsync(int id);
         Customer FindById(int id);
-        Task<CustomerDto> FindCustomerDtoByIdAsync(int id);
+        Task<CustomerInfoDto> FindCustomerDtoByIdAsync(int id);
         Task<int> InsertAsync(CustomerCreateDto CustomerCreateDto);
         Task<int> UpdateAsync(CustomerUpdateDto CustomerUpdateDto);
         Task DeleteAsync(int id);

@@ -37,17 +37,17 @@ namespace SimpleUser.API.Controllers.v1
 
         [Authorize(Policy = "RequireUser")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<CustomerDto>> Details(int id)
+        public async Task<ActionResult<CustomerInfoDto>> Details(int id)
         {
-            CustomerDto CustomerDto = await _CustomerService.FindCustomerDtoByIdAsync(id);
+            CustomerInfoDto customerInfoDto = await _CustomerService.FindCustomerDtoByIdAsync(id);
 
-            if (CustomerDto == null)
+            if (customerInfoDto == null)
             {
                 _logger.LogInformation($"Can not find Customer have id {id}");
                 return NotFound();
             }
 
-            return CustomerDto;
+            return customerInfoDto;
         }
 
         [Authorize(Policy = "RequireManager")]

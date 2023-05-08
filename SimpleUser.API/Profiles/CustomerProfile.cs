@@ -38,6 +38,16 @@ namespace SimpleCustomer.API.Profiles
                 );
             CreateMap<CustomerDetailDto, CustomerDetail>();
             CreateMap<CustomerDetail, CustomerDetailDto>();
+            CreateMap<CustomerInfoDto, Customer>()
+                 .ForMember(
+                    dest => dest.CustomerDetail,
+                    opt => opt.MapFrom(src => src.CustomerDetailDto)
+                );
+            CreateMap<Customer, CustomerInfoDto>()
+                 .ForMember(
+                    dest => dest.CustomerDetailDto,
+                    opt => opt.MapFrom(src => src.CustomerDetail)
+                );
         }
     }
 }
